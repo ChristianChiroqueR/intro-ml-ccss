@@ -1,0 +1,27 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Introducción al ML aplicado a las CCSS"
+  author: "Christian Chiroque Ruiz"
+  date: "8/19/2025"  #M/D/Y
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: 
+      dark: darkly
+      light: flatly
+  pdf:
+    documentclass: scrreprt
+lang: es
+
+editor: visual
+
