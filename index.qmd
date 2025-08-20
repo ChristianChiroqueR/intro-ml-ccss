@@ -1,9 +1,57 @@
-# Preface {.unnumbered}
+# Sobre el curso {.unnumbered}
 
-This is a Quarto book........da
+## Bienvenida
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
+¡Hola y bienvenid@!
 
-```{r}
-1 + 1
+Es un gusto darte la bienvenida al curso **Introducción al Machine Learning aplicado a las Ciencias Sociales** de la Pontificia Universidad Católica del Perú.
+
+En este espacio encontrarás todo el material del curso: presentaciones, código en R, textos explicativos y recursos audiovisuales complementarios que te ayudarán a reforzar los conceptos vistos en clase.
+
+## Docente
+
+Mi nombre es Christian Chiroque, soy politólogo especializado en análisis de datos, machine learning y su aplicación en ciencias sociales y políticas públicas. 
+
+Actualmente trabajo como Analista en la Unidad de Inteligencia Financiera del Perú, unidad especializada de la Superintendencia de Banca, Seguros y AFP (SBS). 
+
+Me apasiona enseñar, el basket y el Starcraft.
+
+## Sílabo
+
+```{=html}
+<iframe src="files/silabo.pdf" width="700" height="500" style="border: none;"></iframe>
 ```
+
+## R, un lenguaje de programación
+
+![](images/R_logo.png)
+
+R es un entorno y lenguaje de programación con un enfoque al análisis estadístico. Primero debemos instalar el R (el software estadístico), el cual lo podemos descargar en el siguiente enlace:
+
+[Haz click aquí para descargar R](https://cran.r-project.org/bin/windows/base/)
+
+La versión más reciente, al 13 de junio de 2025, es la 4.5.1 ("Great Square Root").
+
+Recuerda que R es un software libre por eso otorga a los usuarios la libertad de usar, estudiar, modificar y distribuir el código fuente. Estas libertades permiten colaboración y mejora continua del software por parte de la comunidad.
+
+## R Studio
+
+![](images/Rstudio_logo.png)
+
+RStudio es un entorno de desarrollo integrado (IDE) para el lenguaje de programación R. Facilita el trabajo con R al proporcionar una interfaz gráfica amigable que incluye un editor de código avanzado, herramientas de depuración, visualización de datos y gestión de paquetes, lo que optimiza y simplifica el proceso de análisis de datos y programación estadística.
+
+Lo puedes descargar desde el siguiente link:
+
+[Haz click aquí para descargar R Studio](https://posit.co/download/rstudio-desktop/)
+
+::: callout-warning
+¡Recuerda que primero debes instalar R y luego R Studio!
+:::
+
+## Manual de instalación de R y R Studio
+
+Te sugiero ver el siguiente video para que puedas instalar los programas en tu computadora:
+
+{{< video https://www.youtube.com/watch?v=Re3DqxM_f2k >}}
+
+

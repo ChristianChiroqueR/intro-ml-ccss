@@ -4,9 +4,9 @@
     "href": "index.html",
     "title": "Introducción al ML aplicado a las CCSS",
     "section": "",
-    "text": "Preface\nThis is a Quarto book……..da\nTo learn more about Quarto books visit https://quarto.org/docs/books.\n\n1 + 1\n\n[1] 2",
+    "text": "Sobre el curso",
     "crumbs": [
-      "Preface"
+      "Sobre el curso"
     ]
   },
   {
@@ -37,6 +37,86 @@
     "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
     "crumbs": [
       "References"
+    ]
+  },
+  {
+    "objectID": "index.html#bienvenida",
+    "href": "index.html#bienvenida",
+    "title": "Introducción al ML aplicado a las CCSS",
+    "section": "Bienvenida",
+    "text": "Bienvenida\n¡Hola y bienvenid@!\nEs un gusto darte la bienvenida al curso Introducción al Machine Learning aplicado a las Ciencias Sociales de la Pontificia Universidad Católica del Perú.\nEn este espacio encontrarás todo el material del curso: presentaciones, código en R, textos explicativos y recursos audiovisuales complementarios que te ayudarán a reforzar los conceptos vistos en clase.",
+    "crumbs": [
+      "Sobre el curso"
+    ]
+  },
+  {
+    "objectID": "index.html#sílabo",
+    "href": "index.html#sílabo",
+    "title": "Introducción al ML aplicado a las CCSS",
+    "section": "Sílabo",
+    "text": "Sílabo",
+    "crumbs": [
+      "Sobre el curso"
+    ]
+  },
+  {
+    "objectID": "index.html#r-un-lenguaje-de-programación",
+    "href": "index.html#r-un-lenguaje-de-programación",
+    "title": "Introducción al ML aplicado a las CCSS",
+    "section": "R, un lenguaje de programación",
+    "text": "R, un lenguaje de programación\n\nR es un entorno y lenguaje de programación con un enfoque al análisis estadístico. Primero debemos instalar el R (el software estadístico), el cual lo podemos descargar en el siguiente enlace:\nHaz click aquí para descargar R\nLa versión más reciente, al 13 de junio de 2025, es la 4.5.1 (“Great Square Root”).\nRecuerda que R es un software libre por eso otorga a los usuarios la libertad de usar, estudiar, modificar y distribuir el código fuente. Estas libertades permiten colaboración y mejora continua del software por parte de la comunidad.",
+    "crumbs": [
+      "Sobre el curso"
+    ]
+  },
+  {
+    "objectID": "index.html#r-studio",
+    "href": "index.html#r-studio",
+    "title": "Introducción al ML aplicado a las CCSS",
+    "section": "R Studio",
+    "text": "R Studio\n\nRStudio es un entorno de desarrollo integrado (IDE) para el lenguaje de programación R. Facilita el trabajo con R al proporcionar una interfaz gráfica amigable que incluye un editor de código avanzado, herramientas de depuración, visualización de datos y gestión de paquetes, lo que optimiza y simplifica el proceso de análisis de datos y programación estadística.\nLo puedes descargar desde el siguiente link:\nHaz click aquí para descargar R Studio\n\n\n\n\n\n\nAdvertencia\n\n\n\n¡Recuerda que primero debes instalar R y luego R Studio!",
+    "crumbs": [
+      "Sobre el curso"
+    ]
+  },
+  {
+    "objectID": "index.html#manual-de-instalación-de-r-y-r-studio",
+    "href": "index.html#manual-de-instalación-de-r-y-r-studio",
+    "title": "Introducción al ML aplicado a las CCSS",
+    "section": "Manual de instalación de R y R Studio",
+    "text": "Manual de instalación de R y R Studio\nTe sugiero ver el siguiente video para que puedas instalar los programas en tu computadora:",
+    "crumbs": [
+      "Sobre el curso"
+    ]
+  },
+  {
+    "objectID": "C1_intro.html",
+    "href": "C1_intro.html",
+    "title": "1  Introducción",
+    "section": "",
+    "text": "1.1 Ficha resumen\nThis is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#docente",
+    "href": "index.html#docente",
+    "title": "Introducción al ML aplicado a las CCSS",
+    "section": "Docente",
+    "text": "Docente\nMi nombre es Christian Chiroque, soy politólogo especializado en análisis de datos, machine learning y su aplicación en ciencias sociales y políticas públicas.\nActualmente trabajo como Analista en la Unidad de Inteligencia Financiera del Perú, unidad especializada de la Superintendencia de Banca, Seguros y AFP (SBS).\nMe apasiona enseñar, el basket y el Starcraft.",
+    "crumbs": [
+      "Sobre el curso"
+    ]
+  },
+  {
+    "objectID": "C1_intro.html#ficha-resumen",
+    "href": "C1_intro.html#ficha-resumen",
+    "title": "1  Introducción",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. «Literate Programming». Comput. J. 27 (2): 97-111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción</span>"
     ]
   }
 ]

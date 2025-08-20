@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Christian Chiroque Ruiz">
 
-<title>Introducción al ML aplicado a las CCSS</title>
+<title>1&nbsp; Introducción – Introducción al ML aplicado a las CCSS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,7 +20,62 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -31,7 +85,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./C1_intro.html" rel="next">
+<link href="./summary.html" rel="next">
+<link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -244,7 +299,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Sobre el curso</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./C1_intro.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -274,13 +329,13 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Sobre el curso</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./C1_intro.html" class="sidebar-item-text sidebar-link">
+  <a href="./C1_intro.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción</span></span></a>
   </div>
 </li>
@@ -306,15 +361,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Tabla de contenidos</h2>
    
   <ul>
-  <li><a href="#sobre-el-curso" id="toc-sobre-el-curso" class="nav-link active" data-scroll-target="#sobre-el-curso">Sobre el curso</a>
-  <ul class="collapse">
-  <li><a href="#bienvenida" id="toc-bienvenida" class="nav-link" data-scroll-target="#bienvenida">Bienvenida</a></li>
-  <li><a href="#docente" id="toc-docente" class="nav-link" data-scroll-target="#docente">Docente</a></li>
-  <li><a href="#sílabo" id="toc-sílabo" class="nav-link" data-scroll-target="#sílabo">Sílabo</a></li>
-  <li><a href="#r-un-lenguaje-de-programación" id="toc-r-un-lenguaje-de-programación" class="nav-link" data-scroll-target="#r-un-lenguaje-de-programación">R, un lenguaje de programación</a></li>
-  <li><a href="#r-studio" id="toc-r-studio" class="nav-link" data-scroll-target="#r-studio">R Studio</a></li>
-  <li><a href="#manual-de-instalación-de-r-y-r-studio" id="toc-manual-de-instalación-de-r-y-r-studio" class="nav-link" data-scroll-target="#manual-de-instalación-de-r-y-r-studio">Manual de instalación de R y R Studio</a></li>
-  </ul></li>
+  <li><a href="#ficha-resumen" id="toc-ficha-resumen" class="nav-link active" data-scroll-target="#ficha-resumen"><span class="header-section-number">1.1</span> Ficha resumen</a></li>
   </ul>
 </nav>
     </div>
@@ -324,26 +371,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Introducción al ML aplicado a las CCSS</h1>
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Autor/a</div>
-    <div class="quarto-title-meta-contents">
-             <p>Christian Chiroque Ruiz </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Fecha de publicación</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">19 de agosto de 2025</p>
-    </div>
-  </div>
   
     
   </div>
@@ -353,59 +388,23 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="sobre-el-curso" class="level1 unnumbered">
-<h1 class="unnumbered">Sobre el curso</h1>
-<section id="bienvenida" class="level2">
-<h2 class="anchored" data-anchor-id="bienvenida">Bienvenida</h2>
-<p>¡Hola y bienvenid@!</p>
-<p>Es un gusto darte la bienvenida al curso <strong>Introducción al Machine Learning aplicado a las Ciencias Sociales</strong> de la Pontificia Universidad Católica del Perú.</p>
-<p>En este espacio encontrarás todo el material del curso: presentaciones, código en R, textos explicativos y recursos audiovisuales complementarios que te ayudarán a reforzar los conceptos vistos en clase.</p>
-</section>
-<section id="docente" class="level2">
-<h2 class="anchored" data-anchor-id="docente">Docente</h2>
-<p>Mi nombre es Christian Chiroque, soy politólogo especializado en análisis de datos, machine learning y su aplicación en ciencias sociales y políticas públicas.</p>
-<p>Actualmente trabajo como Analista en la Unidad de Inteligencia Financiera del Perú, unidad especializada de la Superintendencia de Banca, Seguros y AFP (SBS).</p>
-<p>Me apasiona enseñar, el basket y el Starcraft.</p>
-</section>
-<section id="sílabo" class="level2">
-<h2 class="anchored" data-anchor-id="sílabo">Sílabo</h2>
-<iframe src="files/silabo.pdf" width="700" height="500" style="border: none;"></iframe>
-</section>
-<section id="r-un-lenguaje-de-programación" class="level2">
-<h2 class="anchored" data-anchor-id="r-un-lenguaje-de-programación">R, un lenguaje de programación</h2>
-<p><img src="images/R_logo.png" class="img-fluid"></p>
-<p>R es un entorno y lenguaje de programación con un enfoque al análisis estadístico. Primero debemos instalar el R (el software estadístico), el cual lo podemos descargar en el siguiente enlace:</p>
-<p><a href="https://cran.r-project.org/bin/windows/base/">Haz click aquí para descargar R</a></p>
-<p>La versión más reciente, al 13 de junio de 2025, es la 4.5.1 (“Great Square Root”).</p>
-<p>Recuerda que R es un software libre por eso otorga a los usuarios la libertad de usar, estudiar, modificar y distribuir el código fuente. Estas libertades permiten colaboración y mejora continua del software por parte de la comunidad.</p>
-</section>
-<section id="r-studio" class="level2">
-<h2 class="anchored" data-anchor-id="r-studio">R Studio</h2>
-<p><img src="images/Rstudio_logo.png" class="img-fluid"></p>
-<p>RStudio es un entorno de desarrollo integrado (IDE) para el lenguaje de programación R. Facilita el trabajo con R al proporcionar una interfaz gráfica amigable que incluye un editor de código avanzado, herramientas de depuración, visualización de datos y gestión de paquetes, lo que optimiza y simplifica el proceso de análisis de datos y programación estadística.</p>
-<p>Lo puedes descargar desde el siguiente link:</p>
-<p><a href="https://posit.co/download/rstudio-desktop/">Haz click aquí para descargar R Studio</a></p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Advertencia
+<p>This is a book created from markdown and executable code.</p>
+<p>See <span class="citation" data-cites="knuth84">Knuth (<a href="references.html#ref-knuth84" role="doc-biblioref">1984</a>)</span> for additional discussion of literate programming.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
 </div>
 </div>
-<div class="callout-body-container callout-body">
-<p>¡Recuerda que primero debes instalar R y luego R Studio!</p>
-</div>
-</div>
-</section>
-<section id="manual-de-instalación-de-r-y-r-studio" class="level2">
-<h2 class="anchored" data-anchor-id="manual-de-instalación-de-r-y-r-studio">Manual de instalación de R y R Studio</h2>
-<p>Te sugiero ver el siguiente video para que puedas instalar los programas en tu computadora:</p>
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/Re3DqxM_f2k" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<section id="ficha-resumen" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="ficha-resumen"><span class="header-section-number">1.1</span> Ficha resumen</h2>
 
 
-</section>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-knuth84" class="csl-entry" role="listitem">
+Knuth, Donald E. 1984. <span>«Literate Programming»</span>. <em>Comput. J.</em> 27 (2): 97-111. <a href="https://doi.org/10.1093/comjnl/27.2.97">https://doi.org/10.1093/comjnl/27.2.97</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -823,10 +822,13 @@ Advertencia
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Sobre el curso">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Sobre el curso</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./C1_intro.html" class="pagination-link" aria-label="Introducción">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./summary.html" class="pagination-link" aria-label="Summary">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

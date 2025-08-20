@@ -8,7 +8,7 @@ book:
   date: "8/19/2025"  #M/D/Y
   chapters:
     - index.qmd
-    - intro.qmd
+    - C1_intro.qmd
     - summary.qmd
     - references.qmd
 
