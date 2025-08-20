@@ -188,5 +188,25 @@
     "crumbs": [
       "Sobre el curso"
     ]
+  },
+  {
+    "objectID": "index.html#bienvenida.",
+    "href": "index.html#bienvenida.",
+    "title": "Introducción al ML aplicado a las CCSS",
+    "section": "Bienvenida.",
+    "text": "Bienvenida.\n¡Hola y bienvenid@!\nEs un gusto darte la bienvenida al curso Introducción al Machine Learning aplicado a las Ciencias Sociales de la Pontificia Universidad Católica del Perú.\nEn este espacio encontrarás todo el material del curso: presentaciones, código en R, textos explicativos y recursos audiovisuales complementarios que te ayudarán a reforzar los conceptos vistos en clase.",
+    "crumbs": [
+      "Sobre el curso"
+    ]
+  },
+  {
+    "objectID": "C1_intro.html#reflexión-final-alphago",
+    "href": "C1_intro.html#reflexión-final-alphago",
+    "title": "1  Introducción al R",
+    "section": "1.6 Reflexión final: AlphaGo",
+    "text": "1.6 Reflexión final: AlphaGo\nComo complemento, les sugiero ver el documental AlphaGo (2017). Allí podrán observar cómo la inteligencia artificial pasó de la teoría a un caso concreto, utilizando deep learning para resolver un desafío considerado inalcanzable para las máquinas.\nMira el video aquí\nMás allá del resultado, muestra también cómo la aplicación de estos algoritmos plantea preguntas sobre la creatividad, la intuición y el futuro de la relación entre humanos y tecnología.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al R</span>"
+    ]
   }
 ]

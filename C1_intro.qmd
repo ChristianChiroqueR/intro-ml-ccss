@@ -366,3 +366,13 @@ str(data)
 ```{=html}
 <iframe src="files/1-programacion_basica.pdf" width="700" height="500" style="border: none;"></iframe>
 ```
+
+## Reflexión final: AlphaGo
+
+Como complemento, les sugiero ver el documental AlphaGo (2017). Allí podrán observar cómo la inteligencia artificial pasó de la teoría a un caso concreto, utilizando deep learning para resolver un desafío considerado inalcanzable para las máquinas.
+
+[Mira el video aquí](https://www.youtube.com/watch?v=WXuK6gekU1Y)
+
+Más allá del resultado, muestra también cómo la aplicación de estos algoritmos plantea preguntas sobre la creatividad, la intuición y el futuro de la relación entre humanos y tecnología.
+
+![](images/go.jpg)
