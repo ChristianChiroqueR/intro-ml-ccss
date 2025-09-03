@@ -3,13 +3,21 @@ project:
   output-dir: docs
 
 book:
-  title: "Introducción al ML aplicado a las CCSS"
+  title: "Introducción al Machine Learning aplicado a las Ciencias Sociales"
   author: "Christian Chiroque Ruiz"
-  date: "8/19/2025"  #M/D/Y
+  date: "09/03/2025"  #M/D/Y
   chapters:
     - index.qmd
-    - C1_intro.qmd
-    - summary.qmd
+    - part: Análisis exploratorio de datos para ML
+      chapters: 
+        - C1_intro.qmd
+        - C2_EDA1.qmd
+        - C3_EDA2.qmd
+
+    - part: Métodos supervisados
+      chapters: 
+        - C4_RL.qmd
+    
     - references.qmd
 
 bibliography: references.bib

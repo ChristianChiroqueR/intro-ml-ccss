@@ -1,0 +1,374 @@
+# Exploración avanzada
+
+## Visualización de datos
+
+La visualización de datos es un paso clave dentro del Análisis Exploratorio de Datos (EDA) en Machine Learning, porque nos permite ir más allá de los números y comprender de manera intuitiva la información con la que vamos a trabajar. A través de gráficos podemos detectar patrones, identificar tendencias, encontrar valores atípicos y comparar distribuciones de las variables, lo que facilita tomar decisiones sobre el preprocesamiento y la selección de características.
+
+En este curso utilizaremos ggplot2, un paquete del ecosistema tidyverse que se ha convertido en un estándar para la visualización en R. Su fortaleza radica en la gramática de los gráficos, un enfoque que nos invita a construir visualizaciones combinando capas (datos, variables estéticas, geometrías, temas) de manera flexible y reproducible.
+
+Para Machine Learning, esta herramienta es fundamental: nos ayuda a explorar relaciones entre variables predictoras y la variable objetivo, a observar cómo se distribuyen los datos y a detectar posibles problemas que, de no atenderse, afectarían el desempeño de nuestros modelos.
+
+### Retomamos nuestro dataset 📊
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(readxl)
+data <- read_xlsx("data/AML_2.xlsx")
+```
+
+| Variable | Cómo debe leerse |
+|-------------------------------------------|-----------------------------|
+| `pais` | Nombre del país. Identificación de la unidad de análisis. |
+| `continente` | Continente al que pertenece el país (ej. América, Europa, Asia). |
+| `region` | Subregión geográfica más específica (ej. Sudamérica, África Occidental). |
+| `aml_index` | Índice de Lavado de Activos según **Basel AML Index**. Valores más altos indican **mayor riesgo de lavado de activos y financiamiento del terrorismo**. |
+| `matricula` | Porcentaje de la población en edad escolar que está matriculada en el sistema educativo. |
+| `pbi_pc` | Producto Bruto Interno per cápita (ingreso promedio por persona en dólares). |
+| `pobreza` | Nivel de pobreza en el país (porcentaje de la población bajo la línea de pobreza). |
+| `urbano` | Porcentaje de la población que reside en áreas urbanas. |
+| `educacion` | Porcentaje del PBI nacional destinado a educación. |
+| `cpi_index` | Índice de Percepción de la Corrupción de **Transparencia Internacional**. Valores más altos significan **menor percepción de corrupción**. |
+| `rule_of_law` | Índice de Estado de Derecho. Valores más altos indican mayor confianza en las leyes, justicia y cumplimiento normativo. |
+| `democracy_index` | Índice de democracia (Economist Intelligence Unit). Valores más altos indican regímenes más democráticos. |
+| `democracy_index_cat` | Categoría del índice de democracia (ej. Democracia plena, Democracia defectuosa, Régimen híbrido, Régimen autoritario). |
+| `organized_crime_index` | Índice de criminalidad organizada. Valores más altos reflejan mayor presencia e influencia de organizaciones criminales. |
+| `organized_crime_index_cat` | Categoría del índice de criminalidad organizada (ej. Baja, Media, Alta). |
+
+Con la finalidad de que cpi_index tenga una intepretación intuitiva vamos a invertir su escala:
+
+```{r}
+data <- data |> mutate(cpi_index=100-cpi_index)
+```
+
+### Anatomía de un ggplot
+
+![](images/capas.png)
+
+`ggplot2` es un popular paquete de visualización de datos para el lenguaje de programación R, basado en los principios de la "Gramática de Gráficos". Esta filosofía de diseño permite a los usuarios construir gráficos complejos y estéticamente agradables a partir de componentes básicos de forma intuitiva y flexible.
+
+El núcleo de ggplot2 radica en su sistema de capas, donde cada gráfico se construye agregando capas que pueden incluir, entre otros, los datos, las estéticas (como color, forma y tamaño), los objetos geométricos (como puntos, líneas y barras), las escalas, y las anotaciones. Este enfoque modular no solo facilita la personalización y optimización de los gráficos sino que también promueve una estructura de código clara y comprensible.
+
+Vamos a hacer un ejemplo paso a paso:
+
+#### 1ra capa: Datos
+
+Es el conjunto de datos a visualizar.
+
+Nuestra primera capa siempre va a ser la data. Sobre esta iniciamos la función ggplot y corroboramos que tenemos un lienzo en blanco.
+
+```{r}
+data |> 
+  ggplot()
+```
+
+#### 2da capa: Estéticas
+
+Es el diseño básico del gráfico (Aesthetics).
+
+Mapeo de variables a propiedades visuales como color, forma o tamaño, definidas con aes().
+
+A diferencia del lienzo en blanco, ya contamos con un diseño. En este caso, hemos indicado al R que el eje X será la variable Pobreza.
+
+```{r}
+data |> 
+  ggplot()+
+  aes(x=aml_index)
+```
+
+::: callout-warning
+En ggplot2, las capas de un gráfico se van adicionando secuencialmente utilizando el operador +.
+:::
+
+#### 3ra capa: Geometrías (Geoms)
+
+Son representaciones gráficas de los datos, como puntos, líneas o barras (geom_point(), geom_line(), geom_bar(), etc.).
+
+En nuestro ejemplo, podemos agregar la geometría de puntos para hacer un scatterplot o diagrama de dispersión:
+
+```{r}
+data |> 
+  ggplot()+
+  aes(x=aml_index)+
+  geom_histogram()
+```
+
+::: callout-note
+En el paquete {ggplot2} existen 30 geometrías disponibles. Puedes ver el detalle de estos en la [documentación del paquete](https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf).
+:::
+
+Esta estructura de capas hace que ggplot2 sea extremadamente útil para explorar y presentar datos de manera efectiva, permitiendo a los usuarios desde principiantes hasta expertos crear visualizaciones de datos complejas y personalizadas con relativa facilidad.
+
+## Exploración univariada: Target
+
+La primera mirada debe dirigirse al target, la variable que queremos predecir. Revisar su distribución nos dice si los valores están concentrados en un rango estrecho o dispersos, si hay sesgos o valores extremos que podrían distorsionar los resultados. Detectar estos patrones desde el inicio nos prepara para tomar decisiones informadas más adelante en el preprocesamiento.
+
+### Histogramas
+
+En este caso, nuestra variable target es el AML Index, por ello, podríamos comenzar con un histograma.
+
+Este primer gráfico nos informa sobre la **distribución** de la variable. Dicho de otra manera, describe con qué frecuencia aparecen ciertos valores o rangos de valores.
+
+```{r}
+#| fig-cap: "Histograma de la variable AML Index"
+data |> 
+  ggplot()+
+  aes(x=aml_index)+
+  geom_histogram()
+```
+
+::: callout-tip
+Guíate con estas preguntas básicas:
+
+1.  ¿Qué forma tiene la distribución? (simétrica como campana, se nota una cola a la derecha o izquierda, con varias “montañas” o unimodal).
+
+2.  ¿Hay valores extremos que aparecen en los bordes?
+:::
+
+### Boxplots
+
+Luego de tener una idea sobre la forma cómo se distribuye la variable, podríamos entrar a analizar su dispersión. La dispersión es indica qué tan extendidos o agrupados están los datos alrededor de un punto central (la media o la mediana). Si bien ya podemos tener una idea de ello viendo un histograma, siempre es útil utilizar un boxplot.
+
+El boxplot es un gráfico estadístico que resume la información esencial de una variable numérica en un solo esquema. Se construye a partir de los cuartiles. Estos son medidas que dividen el conjunto de datos en partes ordenadas:
+
+-   Primer cuartil (Q1): el valor por debajo del cual se encuentra el 25% de los datos.
+
+-   Segundo cuartil (Q2): es la mediana (50%).
+
+-   Tercer cuartil (Q3): el valor por debajo del cual se encuentra el 75% de los datos.
+
+La caja representa el rango intercuartílico (Q3 – Q1), que concentra al 50% central de los datos. La línea dentro de la caja marca la mediana. Los bigotes se extienden hasta los valores que aún se consideran normales, y los puntos fuera de ellos son los **outliers**.
+
+```{r}
+data |> 
+  ggplot()+
+  aes(y=aml_index)+ #Para que aparezca vertical
+  geom_boxplot()
+```
+
+::: callout-tip
+Guíate con estas preguntas básicas:
+
+1.  Mediana: ¿está en el centro o hacia un lado de la caja? → indica simetría o sesgo.
+
+2.  Caja (Q1–Q3): ¿es ancha o angosta? → muestra la variabilidad del 50% central.
+
+3.  Bigotes: ¿son largos o cortos? ¿más extendidos en un lado? → refleja dispersión y asimetría.
+
+4.  Outliers: ¿hay puntos fuera de los bigotes? ¿cuántos y qué tan alejados?
+:::
+
+Si no lo tienes claro, te aconsejo que revisites los conceptos de media, mediana y moda como medidas de tendencia central. Su importancia radica en que simplifican el análisis de grandes volúmenes de información, proporcionando un único valor representativo que ayuda a entender la naturaleza de los datos.
+
+### Ejercicio en clase
+
+Dibujemos un boxplot desde 0.
+
+## Exploración univariada: Predictoras
+
+Analizar las distribuciones de los predictores de manera individual nos permite descubrir escalas muy diferentes, valores atípicos o categorías poco representadas. Esta revisión inicial es clave para comprender la calidad y naturaleza de los insumos que alimentarán el modelo.
+
+### Gráfico de barras
+
+Comencemos con una variable categórica como continente. Antes habíamos visto frecuencias utilizando summary() o count():
+
+```{r}
+data |> 
+  count(continente)
+```
+
+Ahora podemos también solicitar un gráfico de barras:
+
+```{r}
+data |> 
+  ggplot()+
+  aes(x=continente)+
+  geom_bar()
+```
+
+O también puedes utilizar una `extensión` de ggplot como ggchart:
+
+```{r}
+#install.packages("ggcharts")
+library(ggcharts)
+```
+
+Y solicitamos un diagrama similar, pero con una mejor presentación:
+
+```{r}
+data |> 
+  bar_chart(x=continente)+
+  geom_text(aes(label = n, hjust = "left"))
+```
+
+### Ejercicio en clase
+
+Ya exploramos visualmente la variable target y también una predictora, ahora genera tus propios gráficos para:
+
+-   matricula
+
+-   pbi_pc
+
+-   pobreza
+
+-   educacion
+
+-   democracy_index_cat
+
+-   organized_crime_index_cat
+
+## Exploración multivariada
+
+Cuando avanzamos a exploración multivariada nuestro propósito debe ser analizar las interacciones entre las variables y analizar si encontramos alguna asociación.
+
+Esto es importante porque nuestro algoritmo de ML, sea un modelo tradicional o más avanzado (deep learning) va a utilizar esas interacciones para realizar las predicciones.
+
+Aquí hay una norma: si los predictores son malos, el modelo será malo.
+
+### Gráfico de dispersión
+
+Se utiliza para ver la relación entre dos variables numéricas. Aquí debemos recordar conceptos básicos como el **plano cartesiano**, el cual es un sistema de coordenadas que se utiliza para representar y visualizar puntos en un espacio bidimensional.
+
+Está compuesto por dos ejes perpendiculares, el eje horizontal o eje de las abscisas (X) y el eje vertical o eje de las ordenadas (Y).
+
+Estos ejes se cruzan en un punto llamado origen, que se representa con las coordenadas (0,0). Cada punto en el plano cartesiano se representa mediante un par ordenado (x, y), donde “x” indica la posición horizontal del punto a lo largo del eje X y “y” indica la posición vertical del punto a lo largo del eje Y.
+
+El plano cartesiano proporciona un marco de referencia visual que facilita la representación gráfica de datos, funciones matemáticas, relaciones y patrones geométricos, permitiendo el análisis y la interpretación de información en el contexto bidimensional.
+
+```{r}
+data |> 
+  ggplot()+
+  aes(x=cpi_index, y=aml_index)+
+  geom_point()
+```
+
+::: callout-tip
+Guíate con estas preguntas básicas:
+
+1.  ¿Los puntos que vemos en el plano forman alguna figura como una línea? Mientras la línea sea más clara, diremos que la relación lineal será alta En cambio si vemos una línea difícilmente, o simplemente una gran nube de puntos, podríamos decir que la relación lineal es baja.
+
+2.  ¿Una variable aumenta mientras la otra aumenta? Estamos frente a una relación positiva o directa.
+
+3.  ¿Una variable aumenta mientras la otra disminuye? Estamos frente a una relación negativa o indirecta.
+
+4.  Ojo, puede mostrar también una relación no lineal.
+:::
+
+### Extra: Coeficiente de correlación
+
+Una medida que suele solicitarse junto con el gráfico de dispersión, es el coeficiente de correlación. La correlación es una medida que describe la relación o asociación entre dos variables numéricas.
+
+El **coeficiente de correlación de Pearson** indica la fuerza y la dirección de la relación lineal entre las variables y se mide a través de un coeficiente denominado coeficiente de correlación de Pearson.
+
+El coeficiente puede tomar los valores en el rango de -1 a 1.
+
+![](images/correlaciones.jpg)
+
+Solicitemos el coeficiente de correlación entre aml_index y cpi_index
+
+```{r}
+cor.test(data$aml_index, data$cpi_index)
+```
+
+::: callout-tip
+Guíate con estas preguntas básicas:
+
+1.  **FUERZA**: Mientras el valor del coeficiente se aleje más del 0 (sea más grande como valor absoluto) ello indicará una mayor correlación entre las dos variables numéricas.
+
+2.  **DIRECCIÓN**: Cuando el coeficiente tiene signo positivo, ello indicará que la relación tiene sentido directo, es decir, mientras una variable aumenta, la otra aumenta. Si el signo es negativo, mientras una variable aumenta la otra disminuye.
+:::
+
+También puedes utilizar la siguiente escala referencial para guiar tu interpretación:
+
+![](images/correlacion_cohen.jpg)
+
+Esto es importante para algunos algoritmos que suponen linealidad, como el caso de la Regresión Lineal.
+
+### Ejercicio en clase
+
+Crea los gráficos de dispersión y calcula los coeficientes de correlación que se obtiene del cruce de nuestra variable target (aml_index) y las predictoras:
+
+-   matricula
+
+-   pbi_pc
+
+-   pobreza
+
+-   urbano
+
+-   educación
+
+-   rule_of_law
+
+-   democracy_index
+
+-   organized_crime_index
+
+### Gráfico + Coeficiente
+
+```{r}
+library(corrplot)
+
+solo_numericas <- data |> select(where(is.numeric))
+
+corrplot(cor(solo_numericas, 
+             use = "complete.obs"), 
+         method="number", 
+         type="lower",
+         tl.cex=0.8,
+        number.digits = 1)
+```
+
+## Valores perdidos
+
+En la clase anterior ya te había comentado sobre la importancia de detectar los NA o también conocido como valores perdidos. Estos los podemos visualizar variable por variable utilizando la función `summary()` o también podemos utilizar otros paquetes como `skimr`:
+
+```{r}
+#| message: false
+#| warning: false
+#install.packages("skimr")
+library(skimr)
+```
+
+Para una rápida exploración podría utilizar la librería `skimr`:
+
+```{r}
+skim(data)
+```
+
+En este caso también podemos visualizar los valores perdidos de nuestra base de datos a fin de poder tener una imagen de lo que nos estamos enfrentando y luego evaluar, durante el preprocesamiento, qué estrategia será la más adecuada para solucionarlos.
+
+```{r}
+#| message: false
+#| warning: false
+#install.packages("naniar")
+library(naniar)
+```
+
+```{r}
+data |> 
+  vis_miss()
+```
+
+::: callout-tip
+Guíate con estos criterios. Nos importa analizar por variable.
+
+2.  Porcentaje BAJO (\<5%):Puedes eliminar esas filas sin perder mucha información o imputar.
+
+3.  Porcentaje MEDIO (5-20%): Conviene imputar.
+
+4.  Porcentaje ALTO (\>30%): Esa variable podría ser candidata a eliminarse, salvo que tenga relevancia en el análisis.
+:::
+
+## Diagnóstico final de nuestro dataset
+
+Para nuestra data podemos construir el siguiente reporte con cada uno de los pasos que dimos hasta el momento.
+
+| Criterio | Diagnóstico |
+|------------------------------------|------------------------------------|
+| Predictoras categóricas | Sí, se identifican factores → requieren codificación |
+| Valores perdidos | Pocos NA en general → viable imputar (mediana/moda) o eliminar casos puntuales. |
+| Outliers | Variables como pbi_pc tienen valores extremos → revisar si son errores o reales; aplicar transformaciones si corresponde. |
+| Sesgo | Distribuciones sesgadas (ej. pbi_pc) → aplicar transformaciones, si corresponde. |
+| Escalas diferentes | Variables en distintas unidades (ej. miles vs %) → aplicar transformaciones. |
