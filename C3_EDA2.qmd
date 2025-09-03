@@ -202,6 +202,15 @@ data |>
   geom_text(aes(label = n, hjust = "left"))
 ```
 
+::: callout-tip
+Guíate con estas preguntas básicas:
+
+1.  ¿Existen categorías con muy pocas observaciones?
+
+2. Cuando una categoría tiene muy pocas observaciones, puede causar problemas en el modelado (coeficientes inestables en regresión, riesgo de sobreajuste en árboles o dummies casi vacías).
+:::
+
+
 ### Ejercicio en clase
 
 Ya exploramos visualmente la variable target y también una predictora, ahora genera tus propios gráficos para:
@@ -346,6 +355,8 @@ En este caso también podemos visualizar los valores perdidos de nuestra base de
 library(naniar)
 ```
 
+El gráfico vis_miss() nos muestra la presencia de valores faltantes en cada variable. Cada columna representa una variable del dataset, y cada fila corresponde a una observación. Las celdas grises indican datos presentes y las celdas negras indican datos faltantes (NA). En la parte superior aparece el porcentaje de NA en cada variable. Para interpretarlo, debemos fijarnos en: (1) qué variables tienen más valores faltantes, (2) si los NA están distribuidos aleatoriamente o concentrados en ciertos casos, y (3) qué tan grande es el porcentaje total de NA. Esta información nos ayuda a decidir en el preprocesamiento si imputamos, eliminamos casos o descartamos variables.
+
 ```{r}
 data |> 
   vis_miss()
@@ -354,11 +365,11 @@ data |>
 ::: callout-tip
 Guíate con estos criterios. Nos importa analizar por variable.
 
-2.  Porcentaje BAJO (\<5%):Puedes eliminar esas filas sin perder mucha información o imputar.
+1.  Porcentaje BAJO (\<5%):Puedes eliminar esas filas sin perder mucha información o imputar.
 
-3.  Porcentaje MEDIO (5-20%): Conviene imputar.
+2.  Porcentaje MEDIO (5-20%): Conviene imputar.
 
-4.  Porcentaje ALTO (\>30%): Esa variable podría ser candidata a eliminarse, salvo que tenga relevancia en el análisis.
+3.  Porcentaje ALTO (\>30%): Esa variable podría ser candidata a eliminarse, salvo que tenga relevancia en el análisis.
 :::
 
 ## Diagnóstico final de nuestro dataset

@@ -651,7 +651,7 @@ Tip
 <div class="callout-body-container callout-body">
 <p>Guíate con estas preguntas básicas:</p>
 <ol type="1">
-<li><p>¿Qué forma tiene la distribución? (simétrica, sesgada a la derecha o izquierda, con varias “montañas” o unimodal).</p></li>
+<li><p>¿Qué forma tiene la distribución? (simétrica como campana, se nota una cola a la derecha o izquierda, con varias “montañas” o unimodal).</p></li>
 <li><p>¿Hay valores extremos que aparecen en los bordes?</p></li>
 </ol>
 </div>
@@ -659,7 +659,7 @@ Tip
 </section>
 <section id="boxplots" class="level3" data-number="3.2.2">
 <h3 data-number="3.2.2" class="anchored" data-anchor-id="boxplots"><span class="header-section-number">3.2.2</span> Boxplots</h3>
-<p>Luego de tener una idea sobre cómo se distribuye la variable, podríamos entrar a analizar su dispersión. La dispersión es indica qué tan extendidos o agrupados están los datos alrededor de un punto central (la media o la mediana). Si bien ya podemos tener una idea de ello viendo un histograma, siempre es útil utilizar un boxplot.</p>
+<p>Luego de tener una idea sobre la forma cómo se distribuye la variable, podríamos entrar a analizar su dispersión. La dispersión es indica qué tan extendidos o agrupados están los datos alrededor de un punto central (la media o la mediana). Si bien ya podemos tener una idea de ello viendo un histograma, siempre es útil utilizar un boxplot.</p>
 <p>El boxplot es un gráfico estadístico que resume la información esencial de una variable numérica en un solo esquema. Se construye a partir de los cuartiles. Estos son medidas que dividen el conjunto de datos en partes ordenadas:</p>
 <ul>
 <li><p>Primer cuartil (Q1): el valor por debajo del cual se encuentra el 25% de los datos.</p></li>
@@ -707,6 +707,7 @@ Tip
 </section>
 <section id="ejercicio-en-clase" class="level3" data-number="3.2.3">
 <h3 data-number="3.2.3" class="anchored" data-anchor-id="ejercicio-en-clase"><span class="header-section-number">3.2.3</span> Ejercicio en clase</h3>
+<p>Dibujemos un boxplot desde 0.</p>
 </section>
 </section>
 <section id="exploración-univariada-predictoras" class="level2" data-number="3.3">
@@ -759,6 +760,23 @@ Tip
 <p><img src="C3_EDA2_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Guíate con estas preguntas básicas:</p>
+<ol type="1">
+<li><p>¿Existen categorías con muy pocas observaciones?</p></li>
+<li><p>Cuando una categoría tiene muy pocas observaciones, puede causar problemas en el modelado (coeficientes inestables en regresión, riesgo de sobreajuste en árboles o dummies casi vacías).</p></li>
+</ol>
 </div>
 </div>
 </section>
@@ -1205,6 +1223,7 @@ Tip
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("naniar")</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>El gráfico vis_miss() nos muestra la presencia de valores faltantes en cada variable. Cada columna representa una variable del dataset, y cada fila corresponde a una observación. Las celdas grises indican datos presentes y las celdas negras indican datos faltantes (NA). En la parte superior aparece el porcentaje de NA en cada variable. Para interpretarlo, debemos fijarnos en: (1) qué variables tienen más valores faltantes, (2) si los NA están distribuidos aleatoriamente o concentrados en ciertos casos, y (3) qué tan grande es el porcentaje total de NA. Esta información nos ayuda a decidir en el preprocesamiento si imputamos, eliminamos casos o descartamos variables.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span> </span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vis_miss</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1227,7 +1246,7 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <p>Guíate con estos criterios. Nos importa analizar por variable.</p>
-<ol start="2" type="1">
+<ol type="1">
 <li><p>Porcentaje BAJO (&lt;5%):Puedes eliminar esas filas sin perder mucha información o imputar.</p></li>
 <li><p>Porcentaje MEDIO (5-20%): Conviene imputar.</p></li>
 <li><p>Porcentaje ALTO (&gt;30%): Esa variable podría ser candidata a eliminarse, salvo que tenga relevancia en el análisis.</p></li>
