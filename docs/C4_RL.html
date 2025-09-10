@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -72,6 +107,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -275,7 +339,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sobre el curso</span></a>
+ <span class="menu-text">Notas preliminares</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -296,7 +360,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./C2_EDA1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Primeros pasos</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Primeros pasos con tidyverse</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -335,8 +399,30 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#métodos-supervisados" id="toc-métodos-supervisados" class="nav-link active" data-scroll-target="#métodos-supervisados"><span class="header-section-number">4.1</span> Métodos Supervisados</a></li>
+  <li><a href="#regresión-lineal-simple" id="toc-regresión-lineal-simple" class="nav-link" data-scroll-target="#regresión-lineal-simple"><span class="header-section-number">4.2</span> Regresión Lineal Simple</a>
+  <ul class="collapse">
+  <li><a href="#recordar-la-ecuación-de-la-recta" id="toc-recordar-la-ecuación-de-la-recta" class="nav-link" data-scroll-target="#recordar-la-ecuación-de-la-recta"><span class="header-section-number">4.2.1</span> Recordar la ecuación de la recta</a></li>
+  <li><a href="#objetivo" id="toc-objetivo" class="nav-link" data-scroll-target="#objetivo"><span class="header-section-number">4.2.2</span> Objetivo</a></li>
+  <li><a href="#función-de-costo" id="toc-función-de-costo" class="nav-link" data-scroll-target="#función-de-costo"><span class="header-section-number">4.2.3</span> Función de costo</a></li>
+  <li><a href="#explicación-vs-predicción" id="toc-explicación-vs-predicción" class="nav-link" data-scroll-target="#explicación-vs-predicción"><span class="header-section-number">4.2.4</span> Explicación vs Predicción</a></li>
+  </ul></li>
+  <li><a href="#una-regresión-paso-a-paso" id="toc-una-regresión-paso-a-paso" class="nav-link" data-scroll-target="#una-regresión-paso-a-paso"><span class="header-section-number">4.3</span> Una regresión paso a paso</a>
+  <ul class="collapse">
+  <li><a href="#paso-1-análisis-exploratorio-de-datos-eda" id="toc-paso-1-análisis-exploratorio-de-datos-eda" class="nav-link" data-scroll-target="#paso-1-análisis-exploratorio-de-datos-eda"><span class="header-section-number">4.3.1</span> Paso 1: Análisis Exploratorio de Datos (EDA)</a></li>
+  <li><a href="#paso-1-splitear-la-data" id="toc-paso-1-splitear-la-data" class="nav-link" data-scroll-target="#paso-1-splitear-la-data"><span class="header-section-number">4.3.2</span> Paso 1: Splitear la data</a></li>
+  <li><a href="#paso-3-preprocesamiento-de-datos-feature-engineering" id="toc-paso-3-preprocesamiento-de-datos-feature-engineering" class="nav-link" data-scroll-target="#paso-3-preprocesamiento-de-datos-feature-engineering"><span class="header-section-number">4.3.3</span> Paso 3: Preprocesamiento de datos (Feature Engineering)</a></li>
+  <li><a href="#paso-4-seleccionamos-el-modelo" id="toc-paso-4-seleccionamos-el-modelo" class="nav-link" data-scroll-target="#paso-4-seleccionamos-el-modelo"><span class="header-section-number">4.3.4</span> Paso 4: Seleccionamos el modelo</a></li>
+  <li><a href="#paso-5-entrenamos-el-modelo" id="toc-paso-5-entrenamos-el-modelo" class="nav-link" data-scroll-target="#paso-5-entrenamos-el-modelo"><span class="header-section-number">4.3.5</span> Paso 5: Entrenamos el modelo</a></li>
+  <li><a href="#paso-6-evaluamos-el-modelo" id="toc-paso-6-evaluamos-el-modelo" class="nav-link" data-scroll-target="#paso-6-evaluamos-el-modelo"><span class="header-section-number">4.3.6</span> Paso 6: Evaluamos el modelo</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -361,9 +447,469 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>…</p>
+<section id="métodos-supervisados" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="métodos-supervisados"><span class="header-section-number">4.1</span> Métodos Supervisados</h2>
+<p>Un método supervisado es un tipo de técnica en machine learning en la que el modelo aprende a partir de ejemplos en los que <strong>ya conocemos la respuesta correcta</strong>. Es decir, trabajamos con un conjunto de datos que incluye tanto las variables de entrada (lo que usamos para predecir) como una variable de salida o etiqueta (lo que queremos predecir).</p>
+<p><img src="images/supervised.jpg" class="img-fluid"></p>
+<p>El aprendizaje se llama “supervisado” porque el modelo tiene un “supervisor”: los datos con la respuesta ya conocida. Así, el modelo ajusta sus <strong>parámetros</strong> comparando sus predicciones con las respuestas reales y corrigiendo sus errores. Una vez entrenado, podemos darle nuevos datos (sin respuesta) y el modelo intentará predecir el valor de la salida.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¡NUEVO TÉRMINO!</p>
+<p>Un <strong>parámetro</strong> es un valor numérico que forma parte del modelo matemático o estadístico y que determina cómo se comporta ese modelo. Los parámetros no los escogemos “a mano”, sino que el modelo los aprende de los datos.</p>
+</div>
+</div>
+</section>
+<section id="regresión-lineal-simple" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="regresión-lineal-simple"><span class="header-section-number">4.2</span> Regresión Lineal Simple</h2>
+<section id="recordar-la-ecuación-de-la-recta" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="recordar-la-ecuación-de-la-recta"><span class="header-section-number">4.2.1</span> Recordar la ecuación de la recta</h3>
+<p>Debemos acordarnos algunos elementos básicos que aprendimos desde la escuela:</p>
+<p><span class="math display">\[
+y = \beta_0 + \beta_1x
+\]</span></p>
+<p>Donde:</p>
+<p>y es la variable dependiente que se quiere predecir o estimar.</p>
+<p>x es la variable independiente que se utiliza para predecir y.</p>
+<p>β₀ es la intersección de la línea y.</p>
+<p>β₁ es la pendiente de la línea (indica cuánto varía Y por cada unidad de X).</p>
+<p>Tener en cuenta que si:</p>
+<ul>
+<li><p>Si β₁ es positivo, Y aumenta cuando X aumenta.Es una relación directa / positiva.</p></li>
+<li><p>Si β₁ es negativo, Y aumenta cuando X disminuye. Es una relación inversa / negativa.</p></li>
+<li><p>Si β₁ es cero.Y no cambia cuando X varía. No existe relación entre las variables.</p></li>
+</ul>
+</section>
+<section id="objetivo" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="objetivo"><span class="header-section-number">4.2.2</span> Objetivo</h3>
+<p>La regresión lineal es uno de los modelos más simples y fundamentales dentro del aprendizaje supervisado. Su objetivo es predecir un valor <strong>numérico</strong> y <strong>continua</strong> a partir de una o varias variables de entrada. Se basa en la idea de que existe una relación (aproximadamente lineal) entre esas variables explicativas y la variable que queremos predecir.</p>
+<p>Para ello lo que hace es ajustar una línea recta (o un hiperplano, si hay varias variables) que mejor resuma la relación entre las variables de entrada (predictoras) y la variable de salida (respuesta).</p>
+<p><img src="images/RL.jpg" class="img-fluid"></p>
+</section>
+<section id="función-de-costo" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="función-de-costo"><span class="header-section-number">4.2.3</span> Función de costo</h3>
+<p>La función de costo es una fórmula matemática que mide qué tan bien (o mal) el modelo se ajusta a los datos.</p>
+<p>¿Qué significa?</p>
+<ul>
+<li><p>Cada vez que el modelo predice un valor, podemo compararlo con el valor real.</p></li>
+<li><p>La función de costo resume todos esos errores en un solo número.</p></li>
+<li><p>Ese número nos indica la “calidad” del modelo: cuanto más pequeño sea, mejor está ajustada la recta a los datos.</p></li>
+</ul>
+<p><span class="math display">\[
+J(\beta) = \frac{1}{n} \sum_{i=1}^{m} \big(y_i - \hat{y}_i\big)^2
+\]</span></p>
+</section>
+<section id="explicación-vs-predicción" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="explicación-vs-predicción"><span class="header-section-number">4.2.4</span> Explicación vs Predicción</h3>
+<p>En el campo del análisis de datos y del machine learning suele aparecer una tensión entre dos objetivos distintos: explicar fenómenos o predecir resultados futuros.</p>
+<p><strong>Explicación</strong></p>
+<p>El objetivo principal es entender las relaciones entre las variables.</p>
+<p>Se busca interpretar los parámetros de un modelo: por ejemplo, cómo influye la educación en los ingresos, o qué efecto tiene una política pública en la reducción de la pobreza.</p>
+<p>La prioridad no es tanto acertar en nuevas observaciones, sino tener coeficientes confiables y significativos que respalden <strong>hipótesis teóricas</strong>.</p>
+<p>Se preocupa mucho por los supuestos estadísticos, la validez de las inferencias, la <strong>significancia</strong> y la causalidad.</p>
+<p>Ejemplo: un economista que estima un modelo para probar si la inflación depende del precio de los metales.</p>
+<p><img src="images/vangogh1.png" class="img-fluid"></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Una analogía al propósito de la explicación.</p>
+<p>El interés está en saber si la obra refleja fielmente la realidad, es decir, si los datos o el modelo “explican” lo que realmente ocurrió. La pintura sirve como ejemplo de representación: ¿es una descripción precisa de lo que había en la escena?</p>
+</div>
+</div>
+<p><strong>Predicción</strong></p>
+<p>El objetivo es obtener el mayor nivel posible de acierto en datos <strong>nuevos</strong>.</p>
+<p>Importa más el desempeño predictivo que la interpretación de los parámetros.</p>
+<p>Por ello que, en este ámbito, los modelos tienen licencia para ser “cajas negras” (random forests, redes neuronales) si eso mejora la precisión.</p>
+<p>Se aceptan técnicas como regularización, ensambles o validación cruzada, que priorizan generalización más que interpretación.</p>
+<p>Ejemplo: un banco que quiere predecir si un cliente dejará de pagar un crédito, sin importar tanto cuáles variables explican el fenómeno.</p>
+<p><img src="images/vangogh2.png" class="img-fluid"></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Una analogía al propósito de la predicción</p>
+<p>A partir del cuadro, podemos reconstruir una parte que falta (¿podemos “llenar” el trozo ausente basándonos en lo que sí vemos?)</p>
+</div>
+</div>
+<p>En estadística clásica y ciencias sociales, la tendencia ha sido hacia la explicación: probar teorías y entender causalidad.</p>
+<p>En machine learning aplicado la tendencia es hacia la predicción: lograr resultados prácticos aunque el modelo no sea interpretable.</p>
+</section>
+</section>
+<section id="una-regresión-paso-a-paso" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="una-regresión-paso-a-paso"><span class="header-section-number">4.3</span> Una regresión paso a paso</h2>
+<p>En esta sección aprenderemos, paso a paso, cómo construir un modelo de machine learning utilizando regresión lineal. Veremos desde la preparación de los datos y la definición del modelo hasta su entrenamiento, evaluación y visualización de resultados, todo dentro del flujo de trabajo de tidymodels en R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.4.1 ──
+✔ broom        1.0.9     ✔ rsample      1.3.1
+✔ dials        1.4.2     ✔ tailor       0.1.0
+✔ infer        1.0.9     ✔ tune         2.0.0
+✔ modeldata    1.5.1     ✔ workflows    1.3.0
+✔ parsnip      1.3.3     ✔ workflowsets 1.1.1
+✔ recipes      1.3.1     ✔ yardstick    1.3.2
+── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ scales::discard() masks purrr::discard()
+✖ dplyr::filter()   masks stats::filter()
+✖ recipes::fixed()  masks stringr::fixed()
+✖ dplyr::lag()      masks stats::lag()
+✖ yardstick::spec() masks readr::spec()
+✖ recipes::step()   masks stats::step()</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"data/AML_2.xlsx"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mira nuestra data, hemos identificado que tenemos ciertos países en los cuales NO TENEMOS la medida de aml_index, es decir, tenemos un NA.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>aml_faltante <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(pais, aml_index, pobreza) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(aml_index))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>aml_faltante</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 3
+   pais                     aml_index pobreza
+   &lt;chr&gt;                        &lt;dbl&gt;   &lt;dbl&gt;
+ 1 Afghanistan                     NA    54.5
+ 2 Argentina                       NA    25.7
+ 3 Belize                          NA    41  
+ 4 Brazil                          NA     4.2
+ 5 Burundi                         NA    64.6
+ 6 Central African Republic        NA    62  
+ 7 Comoros                         NA    44.8
+ 8 Djibouti                        NA    23  
+ 9 El Salvador                     NA    32.7
+10 Eritrea                         NA    50  
+11 Guyana                          NA    35  
+12 India                           NA    21.9
+13 Lesotho                         NA    57  
+14 Nepal                           NA    25.2
+15 Papua New Guinea                NA    37  
+16 Rwanda                          NA    39.1</code></pre>
+</div>
+</div>
+<p>Queremos predecir su AML_index con la variable pobreza. Por eso vamos a utilizar la data completa en la que sí está la variable aml_index:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(aml_index))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="paso-1-análisis-exploratorio-de-datos-eda" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="paso-1-análisis-exploratorio-de-datos-eda"><span class="header-section-number">4.3.1</span> Paso 1: Análisis Exploratorio de Datos (EDA)</h3>
+<p>En este punto, utilizaremos los hallazgos detectados en las últimas dos clases.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data<span class="sc">$</span>aml_index)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  3.000   4.605   5.160   5.261   5.835   8.140 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data<span class="sc">$</span>pobreza)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.60   14.35   22.20   25.77   31.75   72.30 </code></pre>
+</div>
+</div>
+</section>
+<section id="paso-1-splitear-la-data" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="paso-1-splitear-la-data"><span class="header-section-number">4.3.2</span> Paso 1: Splitear la data</h3>
+<p>Dividir los datos en training y testing es un paso fundamental en machine learning. La idea es entrenar el modelo con una parte de la información y reservar otra parte, nunca vista por el modelo, para evaluar su capacidad de generalizar. Esto evita el sesgo de pensar que un modelo es “bueno” solo porque se ajusta bien a los datos con los que fue entrenado.</p>
+<p>¿Por qué se hace el <strong>split</strong>?</p>
+<p>🔹 Entrenamiento: el modelo aprende los patrones usando solo la porción de training.</p>
+<p>🔹 Evaluación: el conjunto de test sirve para medir el poder predictivo en datos nuevos.</p>
+<p>🔹 Prevención de sobreajuste (overfitting): si el modelo se ajusta demasiado a training, su desempeño en test revelará esa debilidad.</p>
+<p>🔹 Realismo: simula lo que pasa en la práctica, cuando usamos el modelo para predecir casos que nunca había visto.</p>
+<p>🔹 Comparación: permite elegir entre varios modelos el que realmente generaliza mejor.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividimos nuestro dataset en dos partes: training y testing</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data)     </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Crea un objeto que contiene la "partición" de los datos.</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Por defecto, 75% de las filas se van al training y 25% al testing.</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># (Se puede ajustar con el argumento prop = 0.8, por ejemplo).</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> <span class="fu">training</span>(index)  </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Extrae del split anterior la parte de entrenamiento,</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># es decir, el subconjunto de datos que usaremos para</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ajustar (entrenar) nuestro modelo.</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>testing_data <span class="ot">&lt;-</span> <span class="fu">testing</span>(index)    </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Extrae del split anterior la parte de prueba,</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># es decir, el subconjunto de datos que NO verá el modelo</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co"># durante el entrenamiento y que servirá para evaluar</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co"># su capacidad de generalizar a datos nuevos.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Cómo vemos las particiones creadas?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 59 15</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(testing_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20 15</code></pre>
+</div>
+</div>
+</section>
+<section id="paso-3-preprocesamiento-de-datos-feature-engineering" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="paso-3-preprocesamiento-de-datos-feature-engineering"><span class="header-section-number">4.3.3</span> Paso 3: Preprocesamiento de datos (Feature Engineering)</h3>
+<p>El paquete recipes de tidymodels permite definir de manera ordenada y reproducible los pasos de preprocesamiento de los datos antes de entrenar un modelo de machine learning.</p>
+<p>Primero se define la receta principal de tu modelo, que identifica la variable predicha y las predictoras, similar a una ecuación. En este casos utilizamos esta fórmula:</p>
+<p><span class="math display">\[
+VariablePredicha \sim Predictor
+\]</span></p>
+<p>Luego, si lo deseamos, podemos especificar qué transformaciones se aplicarán a las variables: desde tareas sencillas como eliminar valores perdidos o normalizar predictores, hasta imputaciones, creación de variables dummy o reducción de dimensionalidad. Cada transformación se añade como un step, y el flujo se encarga de aprender sus parámetros a partir del conjunto de entrenamiento y aplicarlos también al conjunto de prueba, evitando fugas de información (data leakage). De esta forma, recipes ofrece un marco flexible y seguro para preparar los datos de forma consistente en todo el proceso de modelado.</p>
+<p>Por el momento, vamos a definir nuestra <strong>receta</strong>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pobreza, <span class="at">data =</span> training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Luego de crear la receta, la podemos solicitar para ver qué es lo esta considerando:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mi_receta</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:   1
+predictor: 1</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Más adelante, en este paso también vamos a poder realizar algunas transformaciones dentro de nuestras variables. Por ejemplo:</p>
+<ul>
+<li><p>step_naomit() → elimina filas con valores perdidos.</p></li>
+<li><p>step_meanimpute() / step_medianimpute() → imputan NA con la media o mediana.</p></li>
+<li><p>step_modeimpute() → imputación de NA con la moda en variables categóricas.</p></li>
+<li><p>step_dummy() → convierte variables categóricas en variables dummy (0/1).</p></li>
+<li><p>step_normalize() → estandariza predictores (media = 0, sd = 1).</p></li>
+<li><p>Entre otros.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="paso-4-seleccionamos-el-modelo" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="paso-4-seleccionamos-el-modelo"><span class="header-section-number">4.3.4</span> Paso 4: Seleccionamos el modelo</h3>
+<p>En la fase de modelamiento, el primer paso es definir el modelo que utilizaremos. En este caso empleamos linear_reg(), que especifica una regresión lineal, y le asignamos un motor de cálculo mediante set_engine(“lm”).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mi_modelo_lm <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">set_engine</span>(<span class="st">"lm"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="paso-5-entrenamos-el-modelo" class="level3" data-number="4.3.5">
+<h3 data-number="4.3.5" class="anchored" data-anchor-id="paso-5-entrenamos-el-modelo"><span class="header-section-number">4.3.5</span> Paso 5: Entrenamos el modelo</h3>
+<p>A continuación, iniciamos un workflow(), que es una estructura de tidymodels diseñada para integrar en un solo flujo el preprocesamiento de datos (receta) y el entrenamiento. Esto garantiza que todo el proceso se ejecute de manera ordenada, reproducible y sin fugas de información. Añadimos al workflow tanto la receta definida en la etapa de preprocesamiento como el modelo lineal.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>flujo_ml<span class="ot">&lt;-</span><span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">add_recipe</span>(mi_receta) <span class="sc">|&gt;</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>             <span class="fu">add_model</span>(mi_modelo_lm)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>flujo_ml</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+0 Recipe Steps
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Computational engine: lm </code></pre>
+</div>
+</div>
+<p>Finalmente, y entrenamos este flujo con los <strong>datos de entrenamiento</strong>. De esta manera, se obtiene un objeto ajustado que estará listo para realizar predicciones y ser evaluado en el conjunto de prueba.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>modelo_entrenado <span class="ot">&lt;-</span> flujo_ml <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">fit</span>(<span class="at">data =</span> training_data) <span class="co"># Con el de ENTRENAMIENTO!</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Si deseamos ver los coeficientes (estimates) del modelo podemos solicitarlo con <code>tidy()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(modelo_entrenado)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)   4.27     0.221       19.3  1.04e-26
+2 pobreza       0.0405   0.00770      5.26 2.23e- 6</code></pre>
+</div>
+</div>
+<p>Entonces, en este caso el modelo para la predicción del AML_index sería el siguiente:</p>
+<p><span class="math display">\[
+AML = 4.27 + 0.04 * POBREZA
+\]</span></p>
+</section>
+<section id="paso-6-evaluamos-el-modelo" class="level3" data-number="4.3.6">
+<h3 data-number="4.3.6" class="anchored" data-anchor-id="paso-6-evaluamos-el-modelo"><span class="header-section-number">4.3.6</span> Paso 6: Evaluamos el modelo</h3>
+<p>Una vez que el modelo ha sido entrenado, el siguiente paso es evaluar su desempeño. La evaluación consiste en medir qué tan bien el modelo logra predecir los valores de la variable de interés, comparando las predicciones con los valores reales. Para ello se utilizan métricas de error, como el RMSE (Root Mean Squared Error), que nos permiten cuantificar la calidad del ajuste y, sobre todo, estimar su capacidad de generalización cuando se aplica a nuevos datos.</p>
+<p>Para ello, primero utilizamos el modelo generado para predecir con la nueva data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>prediccion_test<span class="ot">&lt;-</span>modelo_entrenado <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">predict</span>(testing_data) <span class="sc">|&gt;</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">bind_cols</span>(<span class="at">valor_real=</span>testing_data<span class="sc">$</span>aml_index)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>prediccion_test</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 2
+   .pred valor_real
+   &lt;dbl&gt;      &lt;dbl&gt;
+ 1  4.85       4.75
+ 2  4.89       4.13
+ 3  4.76       5.89
+ 4  5.49       6.75
+ 5  5.51       5.21
+ 6  5.13       3   
+ 7  6.18       7.69
+ 8  4.85       4.9 
+ 9  6.47       7.17
+10  5.17       3.47
+11  7.14       7.43
+12  6.33       5.63
+13  6.15       5.21
+14  5.19       4.81
+15  5.87       5.23
+16  4.84       3.57
+17  5.13       3.96
+18  4.54       4.05
+19  6.51       6.95
+20  4.43       5.08</code></pre>
+</div>
+</div>
+<p>Ahora vamos a medir cómo funciona nuestro modelo utilizándolo con data de testeo. Recuerda que en nuestra data de testeo podemos validar en contraste con el valor real.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>yardstick<span class="sc">::</span><span class="fu">rmse</span>(prediccion_test,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> valor_real,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> .pred)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard       0.990</code></pre>
+</div>
+</div>
+<p>El R cuadrado es otra medida, aunque menos utilizada en machine learning, que dice cuánto es <strong>explicado</strong> por nuestro modelo.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rsq</span>(prediccion_test,</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> valor_real,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> .pred)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rsq     standard       0.512</code></pre>
+</div>
+</div>
+<p>Graficamos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>prediccion_test <span class="sc">|&gt;</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> valor_real, <span class="at">y =</span> .pred)<span class="sc">+</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Valor real"</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Valor predicho"</span>,</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Valores reales vs predicciones"</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C4_RL_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Paso 7: Colocamos el modelo en operación</p>
+<p>Si lo que queremos es identificar con este modelo el aml_index perdido de la data inicial, cuál sería nuestra predicción?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>modelo_entrenado <span class="sc">|&gt;</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">predict</span>(aml_faltante) <span class="sc">|&gt;</span> </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">bind_cols</span>(aml_faltante<span class="sc">$</span>pais)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+• `` -&gt; `...2`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 2
+   .pred ...2                    
+   &lt;dbl&gt; &lt;chr&gt;                   
+ 1  6.48 Afghanistan             
+ 2  5.32 Argentina               
+ 3  5.94 Belize                  
+ 4  4.44 Brazil                  
+ 5  6.89 Burundi                 
+ 6  6.79 Central African Republic
+ 7  6.09 Comoros                 
+ 8  5.21 Djibouti                
+ 9  5.60 El Salvador             
+10  6.30 Eritrea                 
+11  5.69 Guyana                  
+12  5.16 India                   
+13  6.58 Lesotho                 
+14  5.30 Nepal                   
+15  5.77 Papua New Guinea        
+16  5.86 Rwanda                  </code></pre>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
