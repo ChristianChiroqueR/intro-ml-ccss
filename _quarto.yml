@@ -17,6 +17,7 @@ book:
     - part: Métodos supervisados
       chapters: 
         - C4_RL.qmd
+        - C5_RL2.qmd
     
     - references.qmd
 
