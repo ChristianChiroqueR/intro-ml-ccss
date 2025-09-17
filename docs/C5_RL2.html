@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; RL con preprocesamiento y Random Forest – Introducción al Machine Learning aplicado a las Ciencias Sociales</title>
+<title>5&nbsp; RL con preprocesamiento y modelos basados en árboles – Introducción al Machine Learning aplicado a las Ciencias Sociales</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -308,7 +308,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./C4_RL.html">Métodos supervisados</a></li><li class="breadcrumb-item"><a href="./C5_RL2.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">RL con preprocesamiento y Random Forest</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./C4_RL.html">Métodos supervisados</a></li><li class="breadcrumb-item"><a href="./C5_RL2.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">RL con preprocesamiento y modelos basados en árboles</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -389,7 +389,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./C5_RL2.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">RL con preprocesamiento y Random Forest</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">RL con preprocesamiento y modelos basados en árboles</span></span></a>
   </div>
 </li>
       </ul>
@@ -417,10 +417,31 @@ window.Quarto = {
   <li><a href="#step_normalize-normalizar-variables" id="toc-step_normalize-normalizar-variables" class="nav-link" data-scroll-target="#step_normalize-normalizar-variables"><span class="header-section-number">5.2.2</span> step_normalize(): Normalizar variables</a></li>
   <li><a href="#step_dummy-predictoras-categóricas" id="toc-step_dummy-predictoras-categóricas" class="nav-link" data-scroll-target="#step_dummy-predictoras-categóricas"><span class="header-section-number">5.2.3</span> step_dummy(): Predictoras categóricas</a></li>
   </ul></li>
-  <li><a href="#probando-la-nueva-receta-con-lm" id="toc-probando-la-nueva-receta-con-lm" class="nav-link" data-scroll-target="#probando-la-nueva-receta-con-lm"><span class="header-section-number">5.3</span> Probando la nueva receta con lm</a></li>
-  <li><a href="#evaluamos-el-modelo-con-test" id="toc-evaluamos-el-modelo-con-test" class="nav-link" data-scroll-target="#evaluamos-el-modelo-con-test"><span class="header-section-number">5.4</span> Evaluamos el modelo con test</a></li>
-  <li><a href="#remuestreo-para-evaluar-el-rendimiento-cross-validation" id="toc-remuestreo-para-evaluar-el-rendimiento-cross-validation" class="nav-link" data-scroll-target="#remuestreo-para-evaluar-el-rendimiento-cross-validation"><span class="header-section-number">5.5</span> Remuestreo para evaluar el rendimiento: cross-validation</a></li>
-  <li><a href="#árboles-de-decisión" id="toc-árboles-de-decisión" class="nav-link" data-scroll-target="#árboles-de-decisión"><span class="header-section-number">5.6</span> Árboles de decisión</a></li>
+  <li><a href="#regresión-lineal" id="toc-regresión-lineal" class="nav-link" data-scroll-target="#regresión-lineal"><span class="header-section-number">5.3</span> Regresión lineal</a>
+  <ul class="collapse">
+  <li><a href="#probando-la-nueva-receta" id="toc-probando-la-nueva-receta" class="nav-link" data-scroll-target="#probando-la-nueva-receta"><span class="header-section-number">5.3.1</span> Probando la nueva receta</a></li>
+  <li><a href="#evaluamos-el-modelo-con-test" id="toc-evaluamos-el-modelo-con-test" class="nav-link" data-scroll-target="#evaluamos-el-modelo-con-test"><span class="header-section-number">5.3.2</span> Evaluamos el modelo con test</a></li>
+  <li><a href="#remuestreo-para-evaluar-el-rendimiento-cross-validation" id="toc-remuestreo-para-evaluar-el-rendimiento-cross-validation" class="nav-link" data-scroll-target="#remuestreo-para-evaluar-el-rendimiento-cross-validation"><span class="header-section-number">5.3.3</span> Remuestreo para evaluar el rendimiento: cross-validation</a></li>
+  </ul></li>
+  <li><a href="#árboles-de-decisión" id="toc-árboles-de-decisión" class="nav-link" data-scroll-target="#árboles-de-decisión"><span class="header-section-number">5.4</span> Árboles de decisión</a>
+  <ul class="collapse">
+  <li><a href="#definición" id="toc-definición" class="nav-link" data-scroll-target="#definición"><span class="header-section-number">5.4.1</span> Definición</a></li>
+  <li><a href="#ventajas-y-desventajas" id="toc-ventajas-y-desventajas" class="nav-link" data-scroll-target="#ventajas-y-desventajas"><span class="header-section-number">5.4.2</span> Ventajas y desventajas</a></li>
+  <li><a href="#ejemplo-simple-de-partición" id="toc-ejemplo-simple-de-partición" class="nav-link" data-scroll-target="#ejemplo-simple-de-partición"><span class="header-section-number">5.4.3</span> Ejemplo simple de partición</a></li>
+  <li><a href="#aplicación-con-una-predictora-numérica" id="toc-aplicación-con-una-predictora-numérica" class="nav-link" data-scroll-target="#aplicación-con-una-predictora-numérica"><span class="header-section-number">5.4.4</span> Aplicación con una predictora numérica</a></li>
+  <li><a href="#aplicación-con-dos-predictoras-numéricas" id="toc-aplicación-con-dos-predictoras-numéricas" class="nav-link" data-scroll-target="#aplicación-con-dos-predictoras-numéricas"><span class="header-section-number">5.4.5</span> Aplicación con dos predictoras numéricas</a></li>
+  <li><a href="#aplicación-con-dos-predictoras-numéricas-y-un-factor" id="toc-aplicación-con-dos-predictoras-numéricas-y-un-factor" class="nav-link" data-scroll-target="#aplicación-con-dos-predictoras-numéricas-y-un-factor"><span class="header-section-number">5.4.6</span> Aplicación con dos predictoras numéricas y un factor</a></li>
+  <li><a href="#importancia-de-las-variables" id="toc-importancia-de-las-variables" class="nav-link" data-scroll-target="#importancia-de-las-variables"><span class="header-section-number">5.4.7</span> Importancia de las variables</a></li>
+  <li><a href="#comparación-rl-y-árbol-de-decisión" id="toc-comparación-rl-y-árbol-de-decisión" class="nav-link" data-scroll-target="#comparación-rl-y-árbol-de-decisión"><span class="header-section-number">5.4.8</span> Comparación RL y Árbol de Decisión</a></li>
+  <li><a href="#problema" id="toc-problema" class="nav-link" data-scroll-target="#problema"><span class="header-section-number">5.4.9</span> Problema!</a></li>
+  </ul></li>
+  <li><a href="#random-forest" id="toc-random-forest" class="nav-link" data-scroll-target="#random-forest"><span class="header-section-number">5.5</span> Random Forest</a>
+  <ul class="collapse">
+  <li><a href="#definición-1" id="toc-definición-1" class="nav-link" data-scroll-target="#definición-1"><span class="header-section-number">5.5.1</span> Definición</a></li>
+  <li><a href="#ventajas-y-desventajas-1" id="toc-ventajas-y-desventajas-1" class="nav-link" data-scroll-target="#ventajas-y-desventajas-1"><span class="header-section-number">5.5.2</span> Ventajas y desventajas</a></li>
+  <li><a href="#aplicación-con-tidymodels" id="toc-aplicación-con-tidymodels" class="nav-link" data-scroll-target="#aplicación-con-tidymodels"><span class="header-section-number">5.5.3</span> Aplicación con tidymodels</a></li>
+  <li><a href="#comparación-rl-dt-rf" id="toc-comparación-rl-dt-rf" class="nav-link" data-scroll-target="#comparación-rl-dt-rf"><span class="header-section-number">5.5.4</span> Comparación RL, DT, RF</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -428,9 +449,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./C4_RL.html">Métodos supervisados</a></li><li class="breadcrumb-item"><a href="./C5_RL2.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">RL con preprocesamiento y Random Forest</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./C4_RL.html">Métodos supervisados</a></li><li class="breadcrumb-item"><a href="./C5_RL2.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">RL con preprocesamiento y modelos basados en árboles</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">RL con preprocesamiento y Random Forest</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">RL con preprocesamiento y modelos basados en árboles</span></h1>
 </div>
 
 
@@ -629,26 +650,12 @@ Nota
 20       0.485      5.08</code></pre>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Nota
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Algunas consideraciones que debes recordar:</p>
-<ul>
-<li></li>
-</ul>
-</div>
-</div>
 </section>
 <section id="step_normalize-normalizar-variables" class="level3" data-number="5.2.2">
 <h3 data-number="5.2.2" class="anchored" data-anchor-id="step_normalize-normalizar-variables"><span class="header-section-number">5.2.2</span> step_normalize(): Normalizar variables</h3>
+<p><strong>Definición</strong></p>
 <p>Estandariza variables numéricas mediante z-score: a cada columna seleccionada le resta su media y la divide por su desviación estándar.</p>
+<p><img src="images/zscore.jpeg" class="img-fluid"></p>
 <p>Cuándo usarlo:</p>
 <ul>
 <li><p>Modelos sensibles a la escala o basados en distancia: k-NN, SVM, regresiones penalizadas (glmnet: Lasso/Ridge/Elastic Net), redes neuronales.</p></li>
@@ -663,6 +670,7 @@ Nota
 <li><p>En tablas/gráficos: histogramas centrados en 0; resúmenes tipo mean ~ 0 y sd ~ 1. Si haces scatterplots, la nube luce igual, pero con ejes reescalados.</p></li>
 <li><p>En el modelo: algoritmos sensibles a escala (k-NN, SVM, Lasso/Ridge/Elastic Net, PCA, k-means) se vuelven más estables y los coeficientes en modelos lineales son más comparables en magnitud.</p></li>
 </ul>
+<p><strong>Ejemplo simple</strong></p>
 <p>Veamos lo que hacemos con un ejemplo:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
@@ -707,6 +715,7 @@ Nota
 -1.0691 -0.8095 -0.2615  0.0000  0.6038  1.8536 </code></pre>
 </div>
 </div>
+<p><strong>Aplicación con tidymodels</strong></p>
 <p>Esto que hemos hecho manualmente, también lo podemos hacer con tidymodels y la función step_normalize(). Piensa en las variables rule_of_law y cpi_index.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> rule_of_law <span class="sc">+</span> pbi_pc, <span class="at">data =</span> training_data) <span class="sc">|&gt;</span> </span>
@@ -769,9 +778,11 @@ Nota
 </section>
 <section id="step_dummy-predictoras-categóricas" class="level3" data-number="5.2.3">
 <h3 data-number="5.2.3" class="anchored" data-anchor-id="step_dummy-predictoras-categóricas"><span class="header-section-number">5.2.3</span> step_dummy(): Predictoras categóricas</h3>
+<p><strong>Definición</strong></p>
 <p>Para usar variables categóricas en muchos algoritmos de aprendizaje (por ejemplo, regresiones penalizadas como glmnet, SVM, redes, XGBoost), primero hay que convertirlas a variables numéricas. La forma estándar es el one-hot encoding: cada categoría de una variable se transforma en una columna binaria que vale 1 si el registro pertenece a esa categoría y 0 si no.</p>
 <p><img src="images/onehot.png" class="img-fluid"></p>
 <p>Por ejemplo, si color tiene valores (rojo, azul, verde), se crean columnas como color_rojo, color_azul y color_verde. Esto permite que el modelo “entienda” información categórica sin asignar números arbitrarios que introducirían un orden falso.</p>
+<p><strong>Ejemplo simple</strong></p>
 <p>Hagamos un ejemplo básico:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
@@ -807,6 +818,7 @@ Nota
 </div>
 </div>
 <p>Como ves en este ejemplo, a la derecha hemos creado dos nuevas variables “sector_publico” que coloca un “1” cuando efectivamente el caso pertenece a ese sector y “sector_privado” cuando ocurre lo propio. En caso no se cumpla la condición, existirá un cero.</p>
+<p><strong>Aplicación con tidymodels</strong></p>
 <p>Ahora bien, podemos hacer esta transformación de una forma más sencilla utilizando recipes.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> rule_of_law <span class="sc">+</span> pbi_pc <span class="sc">+</span> continente, <span class="at">data =</span> training_data) <span class="sc">|&gt;</span> </span>
@@ -871,9 +883,11 @@ Nota
 </div>
 </section>
 </section>
-<section id="probando-la-nueva-receta-con-lm" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="probando-la-nueva-receta-con-lm"><span class="header-section-number">5.3</span> Probando la nueva receta con lm</h2>
-<p>Recapitulamos la receta que tenemos:</p>
+<section id="regresión-lineal" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="regresión-lineal"><span class="header-section-number">5.3</span> Regresión lineal</h2>
+<section id="probando-la-nueva-receta" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="probando-la-nueva-receta"><span class="header-section-number">5.3.1</span> Probando la nueva receta</h3>
+<p>Recapitulamos la receta que tenemos con preprocesamiento:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>mi_receta</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -911,6 +925,7 @@ predictor: 3</code></pre>
 <pre><code>• Dummy variables from: continente</code></pre>
 </div>
 </div>
+<p>Generamos nuestro modelo:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>mi_modelo_lm <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">set_engine</span>(<span class="st">"lm"</span>)</span>
@@ -940,8 +955,8 @@ predictor: 3</code></pre>
 </div>
 <p><strong>Qué puedes notar en los coeficientes?</strong></p>
 </section>
-<section id="evaluamos-el-modelo-con-test" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="evaluamos-el-modelo-con-test"><span class="header-section-number">5.4</span> Evaluamos el modelo con test</h2>
+<section id="evaluamos-el-modelo-con-test" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="evaluamos-el-modelo-con-test"><span class="header-section-number">5.3.2</span> Evaluamos el modelo con test</h3>
 <p>Una vez que el modelo ha sido entrenado, el siguiente paso es evaluar su desempeño. La evaluación consiste en medir qué tan bien el modelo logra predecir los valores de la variable de interés, comparando las predicciones con los valores reales. Para ello se utilizan métricas de error, como el RMSE (Root Mean Squared Error), que nos permiten cuantificar la calidad del ajuste y, sobre todo, estimar su capacidad de generalización cuando se aplica a nuevos datos.</p>
 <p>Para ello, primero utilizamos el modelo generado para predecir con la nueva data:</p>
 <div class="cell">
@@ -1022,12 +1037,12 @@ predictor: 3</code></pre>
 </div>
 </div>
 </section>
-<section id="remuestreo-para-evaluar-el-rendimiento-cross-validation" class="level2" data-number="5.5">
-<h2 data-number="5.5" class="anchored" data-anchor-id="remuestreo-para-evaluar-el-rendimiento-cross-validation"><span class="header-section-number">5.5</span> Remuestreo para evaluar el rendimiento: cross-validation</h2>
+<section id="remuestreo-para-evaluar-el-rendimiento-cross-validation" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="remuestreo-para-evaluar-el-rendimiento-cross-validation"><span class="header-section-number">5.3.3</span> Remuestreo para evaluar el rendimiento: cross-validation</h3>
 <p>Hasta aquí te había comentado que era necesario separar nuestra data en data de entrenamiento (train) y data de evaluación (test).</p>
 <p><img src="images/TRAINTEST.png" class="img-fluid"></p>
 <p>Sin embargo, el depender de <strong>un único split</strong> (partición) es un riesgo para nosotros. Si te pones a pensar es como evaluar a un deportista con una sóla carrera. En otras palabras, la “nota” del modelo queda a merced del azar del muestreo. Por eso, se establece que antes de irnos a evaluar al modelo con el testing dataset debe pasar por un proceso de validación.</p>
-<p>Este proceso de validación requerirá hacer un split adicional. Normalmente, en un escenario óptimo, vamos a tener la suficiente cantidad de información para crear una partición más.</p>
+<p>Este proceso de validación requeriría hacer un split adicional. Normalmente, en un escenario óptimo, vamos a tener la suficiente cantidad de información para crear una partición más.</p>
 <p><img src="images/validation.png" class="img-fluid"></p>
 <p>Sin embargo, lo que usualmente ocurre es que no se cuenta con la suficiente cantidad de información. Esto nos deja una salida: usar una técnica que se llama <strong>cross-validation o validación cruzada</strong>.</p>
 <p><img src="images/cv.png" class="img-fluid"></p>
@@ -1099,11 +1114,475 @@ There were issues with some computations   A: x1</code></pre>
 2 rsq     standard   0.740     4  0.0518 pre0_mod0_post0</code></pre>
 </div>
 </div>
+<p>Este fit_samples se recomienda hacerlo antes del fit con la data de testeo. De tal forma que antes de la evaluación, ya sabes que tu modelo puede funcionar con distintos subdataset creados a partir de tu data de entrenamiento original.</p>
 </section>
-<section id="árboles-de-decisión" class="level2" data-number="5.6">
-<h2 data-number="5.6" class="anchored" data-anchor-id="árboles-de-decisión"><span class="header-section-number">5.6</span> Árboles de decisión</h2>
+</section>
+<section id="árboles-de-decisión" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="árboles-de-decisión"><span class="header-section-number">5.4</span> Árboles de decisión</h2>
+<section id="definición" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="definición"><span class="header-section-number">5.4.1</span> Definición</h3>
+<p>Un árbol de decisión es un modelo predictivo que representa un conjunto de reglas “si… entonces…” organizadas en forma de árbol. Parte de un nodo raíz (todos los datos) y, en cada nodo interno, divide los datos según el valor de una variable predictora para reducir la impureza (en regresión: varianza/MSE).</p>
+<p><img src="images/arbol.png" class="img-fluid"></p>
+<p>El proceso continúa hasta cumplir criterios de parada (profundidad, mínimo de casos, complejidad) y las hojas entregan la predicción final: promedio de la variable objetivo (regresión).</p>
+<p>También se puede aplicar a <strong>clasificación</strong>. Eso lo veremos más adelante!</p>
+</section>
+<section id="ventajas-y-desventajas" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="ventajas-y-desventajas"><span class="header-section-number">5.4.2</span> Ventajas y desventajas</h3>
+<p><strong>Ventajas</strong>:</p>
+<ul>
+<li><p>Interpretables: reglas “si… entonces…” fáciles de explicar.</p></li>
+<li><p>Capturan no linealidades e interacciones sin ingeniería previa.</p></li>
+<li><p>Poco preprocesamiento: no requieren normalizar; toleran outliers mejor que modelos lineales.</p></li>
+<li><p>Mixtos: funcionan con variables numéricas y categóricas.</p></li>
+<li><p>Rápidos de entrenar y útiles para generar hipótesis/segmentaciones.</p></li>
+</ul>
+<p><strong>Desventajas</strong>:</p>
+<ul>
+<li><p>Sobreajustan e inestables: pequeños cambios en los datos alteran mucho el árbol (alta varianza).</p></li>
+<li><p>Fronteras en “escalera” y predicciones por tramos; no extrapolan bien.</p></li>
+<li><p>Sesgo en splits hacia variables con muchos niveles; cuidado al interpretar “importancia”.</p></li>
+</ul>
+</section>
+<section id="ejemplo-simple-de-partición" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="ejemplo-simple-de-partición"><span class="header-section-number">5.4.3</span> Ejemplo simple de partición</h3>
+<p>Imagina que tenemos la siguiente data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id             =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">horas_estudio  =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">2</span>, <span class="dv">5</span>),</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ingreso           =</span> <span class="fu">c</span>(<span class="dv">22</span>, <span class="dv">35</span>, <span class="dv">33</span>, <span class="dv">40</span>, <span class="dv">45</span>, <span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">21</span>, <span class="dv">28</span>, <span class="dv">24</span>)</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>) </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Lo visualizamos en un gráfico de dispersión.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x=</span>horas_estudio, <span class="at">y=</span>ingreso)<span class="sc">+</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C5_RL2_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Generamos una primera partición:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x=</span>horas_estudio, <span class="at">y=</span>ingreso)<span class="sc">+</span></span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">1.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C5_RL2_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>Dentro de cada una de estas secciones vamos a calcular un indicador, el cual es el RMSE a la media de cada uno.</p></li>
+<li><p>Para el caso de la primera partición, como el error es 0, al tener sólo una observación, su RMSE será 0.</p></li>
+<li><p>Para el caso de la segunda partición, calculamos los errores, los elevamos al cuadrado, los sumamos y sacamos promedio:</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(horas_estudio<span class="sc">&gt;=</span><span class="fl">1.5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">mean</span>(ingreso))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  `mean(ingreso)`
+            &lt;dbl&gt;
+1            33.4</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> </span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(horas_estudio<span class="sc">&gt;=</span><span class="fl">1.5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">error_ingreso=</span>ingreso<span class="sc">-</span><span class="fu">mean</span>(ingreso)) <span class="sc">|&gt;</span>  <span class="co"># calculamos el error</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">error_ingreso_al2=</span>error_ingreso<span class="sc">**</span><span class="dv">2</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">RMSE=</span><span class="fu">sum</span>(error_ingreso_al2)<span class="sc">/</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(RMSE<span class="sc">*</span><span class="fl">0.9</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+   RMSE `RMSE * 0.9`
+  &lt;dbl&gt;        &lt;dbl&gt;
+1  55.4         49.8</code></pre>
+</div>
+</div>
+<ul>
+<li><p>Ahora, conociendo el grado de dispersión de cada una de las agrupaciones, podemos encontrar un puntaje para el umbral seleccionado.</p></li>
+<li><p>Este umbral tendrá un puntaje que será la suma de la dispersión de cada sección. En este caso: 49.8</p></li>
+<li><p>Ya tenemos una métrica para evaluar qué tan buena ha sido esta partición tomando como punto de corte 1.5. Y cómo serán las demás particiones posibles?</p></li>
+<li><p>Una vez tengamos la función de costo de todas las particiones posibles, el modelo escogerá aquella en la cual el costo será el menor. Ok, ya tenemos el primer <strong>nodo</strong>.</p></li>
+</ul>
+</section>
+<section id="aplicación-con-una-predictora-numérica" class="level3" data-number="5.4.4">
+<h3 data-number="5.4.4" class="anchored" data-anchor-id="aplicación-con-una-predictora-numérica"><span class="header-section-number">5.4.4</span> Aplicación con una predictora numérica</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>mi_receta_arbol <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc, <span class="at">data =</span> training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">min_n=</span><span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(arbol)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>fit_arbol</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: decision_tree()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+0 Recipe Steps
+
+── Model ───────────────────────────────────────────────────────────────────────
+n= 59 
+
+node), split, n, deviance, yval
+      * denotes terminal node
+
+ 1) root 59 66.593350 5.266441  
+   2) pbi_pc&gt;=3813.495 39 18.884070 4.723333  
+     4) pbi_pc&gt;=15749.22 15  3.088373 4.074667  
+       8) pbi_pc&gt;=54674.97 3  0.706400 3.620000 *
+       9) pbi_pc&lt; 54674.97 12  1.606767 4.188333 *
+     5) pbi_pc&lt; 15749.22 24  5.539462 5.128750 *
+   3) pbi_pc&lt; 3813.495 20 13.773500 6.325500  
+     6) pbi_pc&gt;=1118.465 11  4.157018 5.922727 *
+     7) pbi_pc&lt; 1118.465 9  5.650956 6.817778  
+      14) pbi_pc&gt;=553.69 7  4.194143 6.627143  
+        28) pbi_pc&lt; 735.42 2  0.605000 6.090000 *
+        29) pbi_pc&gt;=735.42 5  2.781280 6.842000  
+          58) pbi_pc&gt;=823.395 3  0.673400 6.530000 *
+          59) pbi_pc&lt; 823.395 2  1.377800 7.310000 *
+      15) pbi_pc&lt; 553.69 2  0.312050 7.485000 *</code></pre>
+</div>
+</div>
+<p>El resultado del modelo lo podemos visualizar con:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Cargando paquete requerido: rpart</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Adjuntando el paquete: 'rpart'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dials':
+
+    prune</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Cannot retrieve the data used to build the model (model.frame: objeto '..y' no encontrado).
+To silence this warning:
+    Call rpart.plot with roundint=FALSE,
+    or rebuild the rpart model with model=TRUE.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C5_RL2_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>En este caso, el primer número de cada recuadro es el valor promedio de y (aml_index) en cada sección. Luego aparece el promedio del nodo original que se va a tal o cual nodo.</p>
+</section>
+<section id="aplicación-con-dos-predictoras-numéricas" class="level3" data-number="5.4.5">
+<h3 data-number="5.4.5" class="anchored" data-anchor-id="aplicación-con-dos-predictoras-numéricas"><span class="header-section-number">5.4.5</span> Aplicación con dos predictoras numéricas</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>mi_receta_arbol <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law, <span class="at">data =</span> training_data)</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(arbol)</span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
+<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a>fit_arbol</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: decision_tree()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+0 Recipe Steps
+
+── Model ───────────────────────────────────────────────────────────────────────
+n= 59 
+
+node), split, n, deviance, yval
+      * denotes terminal node
+
+ 1) root 59 66.593350 5.266441  
+   2) pbi_pc&gt;=3813.495 39 18.884070 4.723333  
+     4) pbi_pc&gt;=15749.22 15  3.088373 4.074667 *
+     5) pbi_pc&lt; 15749.22 24  5.539462 5.128750  
+      10) rule_of_law&gt;=0.5721363 7  0.404600 4.780000 *
+      11) rule_of_law&lt; 0.5721363 17  3.932906 5.272353 *
+   3) pbi_pc&lt; 3813.495 20 13.773500 6.325500  
+     6) pbi_pc&gt;=1118.465 11  4.157018 5.922727 *
+     7) pbi_pc&lt; 1118.465 9  5.650956 6.817778 *</code></pre>
+</div>
+</div>
+<p>El resultado del modelo lo podemos visualizar con:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Cannot retrieve the data used to build the model (model.frame: objeto '..y' no encontrado).
+To silence this warning:
+    Call rpart.plot with roundint=FALSE,
+    or rebuild the rpart model with model=TRUE.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C5_RL2_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="aplicación-con-dos-predictoras-numéricas-y-un-factor" class="level3" data-number="5.4.6">
+<h3 data-number="5.4.6" class="anchored" data-anchor-id="aplicación-con-dos-predictoras-numéricas-y-un-factor"><span class="header-section-number">5.4.6</span> Aplicación con dos predictoras numéricas y un factor</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>mi_receta_arbol <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> </span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>                            rule_of_law<span class="sc">+</span></span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>                            continente, </span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-10"><a href="#cb91-10" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
+<span id="cb91-11"><a href="#cb91-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
+<span id="cb91-12"><a href="#cb91-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(arbol)</span>
+<span id="cb91-13"><a href="#cb91-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-14"><a href="#cb91-14" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb91-15"><a href="#cb91-15" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
+<span id="cb91-16"><a href="#cb91-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-17"><a href="#cb91-17" aria-hidden="true" tabindex="-1"></a>fit_arbol</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: decision_tree()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+0 Recipe Steps
+
+── Model ───────────────────────────────────────────────────────────────────────
+n= 59 
+
+node), split, n, deviance, yval
+      * denotes terminal node
+
+ 1) root 59 66.5933500 5.266441  
+   2) pbi_pc&gt;=3813.495 39 18.8840700 4.723333  
+     4) pbi_pc&gt;=15749.22 15  3.0883730 4.074667 *
+     5) pbi_pc&lt; 15749.22 24  5.5394620 5.128750  
+      10) rule_of_law&gt;=0.5721363 7  0.4046000 4.780000 *
+      11) rule_of_law&lt; 0.5721363 17  3.9329060 5.272353 *
+   3) pbi_pc&lt; 3813.495 20 13.7735000 6.325500  
+     6) continente=Americas,Asia 7  0.9899714 5.704286 *
+     7) continente=Africa 13  8.6276000 6.660000 *</code></pre>
+</div>
+</div>
+<p>Lo visualizamos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Cannot retrieve the data used to build the model (model.frame: objeto '..y' no encontrado).
+To silence this warning:
+    Call rpart.plot with roundint=FALSE,
+    or rebuild the rpart model with model=TRUE.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C5_RL2_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="importancia-de-las-variables" class="level3" data-number="5.4.7">
+<h3 data-number="5.4.7" class="anchored" data-anchor-id="importancia-de-las-variables"><span class="header-section-number">5.4.7</span> Importancia de las variables</h3>
+<p>La importancia de variables es un ranking que indica cuánto aporta cada predictor a las mejoras de predicción del árbol.</p>
+<p>Para qué sirve: priorizar predictores, simplificar cuestionarios/inputs (coste), detectar variables inútiles o fugas de información, y comunicar qué factores “pesan” más en términos predictivos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Adjuntando el paquete: 'vip'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:utils':
+
+    vi</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C5_RL2_files/figure-html/unnamed-chunk-48-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="comparación-rl-y-árbol-de-decisión" class="level3" data-number="5.4.8">
+<h3 data-number="5.4.8" class="anchored" data-anchor-id="comparación-rl-y-árbol-de-decisión"><span class="header-section-number">5.4.8</span> Comparación RL y Árbol de Decisión</h3>
+<p>Considerando las mismas variables:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law<span class="sc">+</span> continente, </span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>¿Cuál modelo logrará la mejor predicción, la regresión lineal o el árbol de decisión?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
+<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a>               <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
+<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>               <span class="fu">add_model</span>(arbol)</span>
+<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb100-10"><a href="#cb100-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
+<span id="cb100-11"><a href="#cb100-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-12"><a href="#cb100-12" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb100-13"><a href="#cb100-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(testing_data) <span class="sc">|&gt;</span> </span>
+<span id="cb100-14"><a href="#cb100-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">bind_cols</span>(<span class="at">valor_real=</span>testing_data<span class="sc">$</span>aml_index) <span class="sc">|&gt;</span> </span>
+<span id="cb100-15"><a href="#cb100-15" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rmse</span>(<span class="at">truth =</span> valor_real,</span>
+<span id="cb100-16"><a href="#cb100-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimate =</span> .pred)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard       0.602</code></pre>
+</div>
+</div>
+<p>En este caso, la regresión lineal ha probado seguir siendo la mejor opción (RMSE = 0.56). No obstante, se encuentran muy cerca en cuanto a su rendimiento. <img src="images/meofende.jpg" class="img-fluid"></p>
+</section>
+<section id="problema" class="level3" data-number="5.4.9">
+<h3 data-number="5.4.9" class="anchored" data-anchor-id="problema"><span class="header-section-number">5.4.9</span> Problema!</h3>
+<ul>
+<li><p>Sobreajuste (overfitting): Crecen hasta “memorizar” el ruido si no se limitan.</p></li>
+<li><p>Alta varianza / inestabilidad: Pequeños cambios en los datos pueden cambiar mucho la estructura del árbol.</p></li>
+</ul>
+<p>SOLUCIÓN: RANDOM FOREST!</p>
+<p><img src="images/overfittedtree.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="random-forest" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="random-forest"><span class="header-section-number">5.5</span> Random Forest</h2>
+<section id="definición-1" class="level3" data-number="5.5.1">
+<h3 data-number="5.5.1" class="anchored" data-anchor-id="definición-1"><span class="header-section-number">5.5.1</span> Definición</h3>
+<p>Random Forest es un modelo de ensamble que combina muchos árboles de decisión para mejorar la capacidad de generalización. Cada árbol se entrena sobre una muestra bootstrap (con reemplazo) del conjunto de datos y, en cada división, considera solo un subconjunto aleatorio de predictores (mtry).</p>
+<p><img src="images/rf.png" class="img-fluid"></p>
+<p>En regresión, la predicción final es el promedio de los árboles. Esta aleatoriedad + agregación reduce la varianza del árbol individual y hace al modelo robusto sin requerir preprocesamientos complejos.</p>
+</section>
+<section id="ventajas-y-desventajas-1" class="level3" data-number="5.5.2">
+<h3 data-number="5.5.2" class="anchored" data-anchor-id="ventajas-y-desventajas-1"><span class="header-section-number">5.5.2</span> Ventajas y desventajas</h3>
+<p><strong>Ventajas</strong>:</p>
+<ul>
+<li><p>Captura no linealidades e interacciones automáticamente.</p></li>
+<li><p>Suele rendir bien “out-of-the-box” y es estable frente a ruido.</p></li>
+<li><p>No requiere normalización de variables; funciona con muchas x.</p></li>
+<li><p>Proporciona importancia de variables.</p></li>
+</ul>
+<p><strong>Desventajas</strong>:</p>
+<ul>
+<li><p>Menor interpretabilidad que un árbol único.</p></li>
+<li><p>Puede ser pesado en memoria/tiempo con muchos árboles o datos muy grandes.</p></li>
+</ul>
+</section>
+<section id="aplicación-con-tidymodels" class="level3" data-number="5.5.3">
+<h3 data-number="5.5.3" class="anchored" data-anchor-id="aplicación-con-tidymodels"><span class="header-section-number">5.5.3</span> Aplicación con tidymodels</h3>
+<p>Vamos con la misma receta del árbol:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law<span class="sc">+</span> continente, </span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Aplicamos el workflow utilizando la función rand_forest():</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>bosque_model <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">trees =</span> <span class="dv">1000</span>, <span class="at">min_n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, <span class="at">importance =</span> <span class="st">"permutation"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>              <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Iniciamos el workflow():</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>bosque_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>                <span class="fu">add_recipe</span>(mi_receta) <span class="sc">|&gt;</span> </span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>                <span class="fu">add_model</span>(bosque_model)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ahora fiteamos el modelo y calculamos el RMSE.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="ot">&lt;-</span> bosque_wf <span class="sc">|&gt;</span> </span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="comparación-rl-dt-rf" class="level3" data-number="5.5.4">
+<h3 data-number="5.5.4" class="anchored" data-anchor-id="comparación-rl-dt-rf"><span class="header-section-number">5.5.4</span> Comparación RL, DT, RF</h3>
+<p>Excelente!!! Ahora conseguir una mejor performance predictiva!!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="sc">|&gt;</span> </span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(testing_data) <span class="sc">|&gt;</span> </span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">bind_cols</span>(<span class="at">valor_real=</span>testing_data<span class="sc">$</span>aml_index) <span class="sc">|&gt;</span> </span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rmse</span>(<span class="at">truth =</span> valor_real,</span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimate =</span> .pred)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard       0.513</code></pre>
+</div>
+</div>
+<p>También podemos comprobar la importancia de las variables:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="sc">|&gt;</span> </span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C5_RL2_files/figure-html/unnamed-chunk-56-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

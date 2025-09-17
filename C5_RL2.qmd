@@ -754,5 +754,4 @@ fit_bosque |>
   vip()
 ```
 
-## Hiperparámetros
 
