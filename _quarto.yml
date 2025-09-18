@@ -5,7 +5,7 @@ project:
 book:
   title: "Introducción al Machine Learning aplicado a las Ciencias Sociales"
   author: "Christian Chiroque Ruiz"
-  date: "09/03/2025"  #M/D/Y
+  date: "09/18/2025"  #M/D/Y
   chapters:
     - index.qmd
     - part: Análisis exploratorio de datos para ML
@@ -18,6 +18,7 @@ book:
       chapters: 
         - C4_RL.qmd
         - C5_RL2.qmd
+        - C6_arboles.qmd
     
     - references.qmd
 

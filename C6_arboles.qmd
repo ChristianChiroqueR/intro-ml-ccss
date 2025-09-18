@@ -1,0 +1,355 @@
+# Árboles de decisión y Random Forest
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(tidymodels)
+```
+
+## Árboles de decisión
+
+### Definición
+
+Un árbol de decisión es un modelo predictivo que representa un conjunto de reglas “si… entonces…” organizadas en forma de árbol. Parte de un nodo raíz (todos los datos) y, en cada nodo interno, divide los datos según el valor de una variable predictora para reducir la impureza (en regresión: varianza/MSE).
+
+![](images/arbol.png)
+
+El proceso continúa hasta cumplir criterios de parada (profundidad, mínimo de casos, complejidad) y las hojas entregan la predicción final: promedio de la variable objetivo (regresión).
+
+También se puede aplicar a **clasificación**. Eso lo veremos más adelante!
+
+### Ventajas y desventajas
+
+**Ventajas**:
+
+-   Interpretables: reglas “si… entonces…” fáciles de explicar.
+
+-   Capturan no linealidades e interacciones sin ingeniería previa.
+
+-   Poco preprocesamiento: no requieren normalizar; toleran outliers mejor que modelos lineales.
+
+-   Mixtos: funcionan con variables numéricas y categóricas.
+
+-   Rápidos de entrenar y útiles para generar hipótesis/segmentaciones.
+
+**Desventajas**:
+
+-   Sobreajustan e inestables: pequeños cambios en los datos alteran mucho el árbol (alta varianza).
+
+-   Fronteras en “escalera” y predicciones por tramos; no extrapolan bien.
+
+-   Sesgo en splits hacia variables con muchos niveles; cuidado al interpretar “importancia”.
+
+### Ejemplo simple de partición
+
+Imagina que tenemos la siguiente data:
+
+```{r}
+df <- tibble::tibble(
+  id             = 1:10,
+  horas_estudio  = c(1, 2, 2, 3, 3, 5, 4, 6, 2, 5),
+  ingreso           = c(22, 35, 33, 40, 45, 35, 40, 21, 28, 24)
+) 
+```
+
+Lo visualizamos en un gráfico de dispersión.
+
+```{r}
+df |> 
+  ggplot()+
+  aes(x=horas_estudio, y=ingreso)+
+  geom_point()
+```
+
+Generamos una primera partición:
+
+```{r}
+df |> 
+  ggplot()+
+  aes(x=horas_estudio, y=ingreso)+
+  geom_point()+
+  geom_vline(xintercept = 1.5, linetype = "dashed")
+```
+
+-   Dentro de cada una de estas secciones vamos a calcular un indicador, el cual es el RMSE a la media de cada uno.
+
+-   Para el caso de la primera partición, como el error es 0, al tener sólo una observación, su RMSE será 0.
+
+-   Para el caso de la segunda partición, calculamos los errores, los elevamos al cuadrado, los sumamos y sacamos promedio:
+
+```{r}
+df |> 
+  filter(horas_estudio>=1.5) |> 
+  summarise(mean(ingreso))
+```
+
+```{r}
+df |> 
+  filter(horas_estudio>=1.5) |> 
+  mutate(error_ingreso=ingreso-mean(ingreso)) |>  # calculamos el error
+  mutate(error_ingreso_al2=error_ingreso**2) |> 
+  summarise(RMSE=sum(error_ingreso_al2)/n()) |> 
+  mutate(RMSE*0.9)
+```
+
+-   Ahora, conociendo el grado de dispersión de cada una de las agrupaciones, podemos encontrar un puntaje para el umbral seleccionado.
+
+-   Este umbral tendrá un puntaje que será la suma de la dispersión de cada sección. En este caso: 49.8
+
+-   Ya tenemos una métrica para evaluar qué tan buena ha sido esta partición tomando como punto de corte 1.5. Y cómo serán las demás particiones posibles?
+
+-   Una vez tengamos la función de costo de todas las particiones posibles, el modelo escogerá aquella en la cual el costo será el menor. Ok, ya tenemos el primer **nodo**.
+
+### Aplicación con una predictora numérica
+
+Utilizamos nuestra base de datos:
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(readxl)
+library(tidymodels)
+data <- read_xlsx("data/AML_2.xlsx")
+data<- data |> 
+        filter(!is.na(aml_index))
+```
+
+
+```{r}
+set.seed(2025)
+index <- initial_split(data)     
+training_data <- training(index)  
+testing_data <- testing(index)    
+```
+
+
+```{r}
+mi_receta_arbol <- recipe(aml_index ~ pbi_pc, data = training_data)
+```
+
+```{r}
+arbol <- decision_tree(min_n=5) |> 
+            set_engine("rpart") |> 
+            set_mode("regression")
+```
+
+```{r}
+wf_arbol <-  workflow()  |> 
+  add_recipe(mi_receta_arbol) |> 
+  add_model(arbol)
+```
+
+```{r}
+fit_arbol <- wf_arbol |> 
+              fit(training_data)
+
+fit_arbol
+```
+
+El resultado del modelo lo podemos visualizar con:
+
+```{r}
+library(rpart.plot)
+fit_arbol |> 
+  extract_fit_engine() |> 
+  rpart.plot()
+```
+
+En este caso, el primer número de cada recuadro es el valor promedio de y (aml_index) en cada sección. Luego aparece el promedio del nodo original que se va a tal o cual nodo.
+
+### Aplicación con dos predictoras numéricas
+
+```{r}
+mi_receta_arbol <- recipe(aml_index ~ pbi_pc + rule_of_law, data = training_data)
+
+arbol <- decision_tree() |> 
+  set_engine("rpart") |> 
+  set_mode("regression")
+
+wf_arbol <-  workflow()  |> 
+  add_recipe(mi_receta_arbol) |> 
+  add_model(arbol)
+
+fit_arbol <- wf_arbol |> 
+              fit(training_data)
+
+fit_arbol
+```
+
+El resultado del modelo lo podemos visualizar con:
+
+```{r}
+library(rpart.plot)
+fit_arbol |> 
+  extract_fit_engine() |> 
+  rpart.plot()
+```
+
+### Aplicación con dos predictoras numéricas y un factor
+
+```{r}
+mi_receta_arbol <- recipe(aml_index ~ pbi_pc + 
+                            rule_of_law+
+                            continente, 
+                          data = training_data)
+
+arbol <- decision_tree() |> 
+  set_engine("rpart") |> 
+  set_mode("regression")
+
+wf_arbol <-  workflow()  |> 
+  add_recipe(mi_receta_arbol) |> 
+  add_model(arbol)
+
+fit_arbol <- wf_arbol |> 
+              fit(training_data)
+
+fit_arbol
+```
+
+Lo visualizamos:
+
+```{r}
+fit_arbol |> 
+  extract_fit_engine() |> 
+  rpart.plot()
+```
+
+### Importancia de las variables
+
+La importancia de variables es un ranking que indica cuánto aporta cada predictor a las mejoras de predicción del árbol.
+
+Para qué sirve: priorizar predictores, simplificar cuestionarios/inputs (coste), detectar variables inútiles o fugas de información, y comunicar qué factores “pesan” más en términos predictivos.
+
+```{r}
+library(vip)
+fit_arbol |> 
+  extract_fit_engine() |> 
+  vip()
+```
+
+### Comparación RL y Árbol de Decisión
+
+Considerando las mismas variables:
+
+```{r}
+mi_receta <- recipe(aml_index ~ pbi_pc + rule_of_law+ continente, 
+                          data = training_data)
+```
+
+¿Cuál modelo logrará la mejor predicción, la regresión lineal o el árbol de decisión?
+
+```{r}
+arbol <- decision_tree() |> 
+         set_engine("rpart") |> 
+         set_mode("regression")
+
+wf_arbol <-  workflow()  |> 
+               add_recipe(mi_receta_arbol) |> 
+               add_model(arbol)
+
+fit_arbol <- wf_arbol |> 
+              fit(training_data)
+
+fit_arbol |> 
+            predict(testing_data) |> 
+            bind_cols(valor_real=testing_data$aml_index) |> 
+            rmse(truth = valor_real,
+                 estimate = .pred)
+```
+
+En este caso, la regresión lineal ha probado seguir siendo la mejor opción (RMSE = 0.56). No obstante, se encuentran muy cerca en cuanto a su rendimiento.
+
+![](images/meofende.jpg)
+
+### Problema!
+
+-   Sobreajuste (overfitting): Crecen hasta “memorizar” el ruido si no se limitan.
+
+-   Alta varianza / inestabilidad: Pequeños cambios en los datos pueden cambiar mucho la estructura del árbol.
+
+SOLUCIÓN: RANDOM FOREST!
+
+![](images/overfittedtree.png)
+
+## Random Forest
+
+### Definición
+
+Random Forest es un modelo de ensamble que combina muchos árboles de decisión para mejorar la capacidad de generalización. Cada árbol se entrena sobre una muestra bootstrap (con reemplazo) del conjunto de datos y, en cada división, considera solo un subconjunto aleatorio de predictores (mtry).
+
+![](images/rf.png)
+
+En regresión, la predicción final es el promedio de los árboles. Esta aleatoriedad + agregación reduce la varianza del árbol individual y hace al modelo robusto sin requerir preprocesamientos complejos.
+
+### Ventajas y desventajas
+
+**Ventajas**:
+
+-   Captura no linealidades e interacciones automáticamente.
+
+-   Suele rendir bien “out-of-the-box” y es estable frente a ruido.
+
+-   No requiere normalización de variables; funciona con muchas x.
+
+-   Proporciona importancia de variables.
+
+**Desventajas**:
+
+-   Menor interpretabilidad que un árbol único.
+
+-   Puede ser pesado en memoria/tiempo con muchos árboles o datos muy grandes.
+
+### Aplicación con tidymodels
+
+Vamos con la misma receta del árbol:
+
+```{r}
+mi_receta <- recipe(aml_index ~ pbi_pc + rule_of_law+ continente, 
+                          data = training_data)
+```
+
+Aplicamos el workflow utilizando la función rand_forest():
+
+```{r}
+bosque_model <- rand_forest(trees = 1000, min_n = 5) |> 
+              set_engine("ranger", importance = "permutation") |> 
+              set_mode("regression")
+```
+
+Iniciamos el workflow():
+
+```{r}
+bosque_wf <- workflow() |> 
+                add_recipe(mi_receta) |> 
+                add_model(bosque_model)
+```
+
+Ahora fiteamos el modelo y calculamos el RMSE.
+
+```{r}
+fit_bosque <- bosque_wf |> 
+              fit(training_data)
+```
+
+### Comparación RL, DT, RF
+
+Excelente!!! Ahora conseguir una mejor performance predictiva!!
+
+```{r}
+fit_bosque |> 
+            predict(testing_data) |> 
+            bind_cols(valor_real=testing_data$aml_index) |> 
+            rmse(truth = valor_real,
+                 estimate = .pred)
+```
+
+También podemos comprobar la importancia de las variables:
+
+```{r}
+fit_bosque |> 
+  extract_fit_engine() |> 
+  vip()
+```

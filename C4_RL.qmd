@@ -334,4 +334,3 @@ modelo_entrenado |>
                   predict(aml_faltante) |> 
                   bind_cols(aml_faltante$pais)
 ```
-
