@@ -397,7 +397,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#aplicación-con-dos-predictoras-numéricas-y-un-factor" id="toc-aplicación-con-dos-predictoras-numéricas-y-un-factor" class="nav-link" data-scroll-target="#aplicación-con-dos-predictoras-numéricas-y-un-factor"><span class="header-section-number">6.1.6</span> Aplicación con dos predictoras numéricas y un factor</a></li>
   <li><a href="#importancia-de-las-variables" id="toc-importancia-de-las-variables" class="nav-link" data-scroll-target="#importancia-de-las-variables"><span class="header-section-number">6.1.7</span> Importancia de las variables</a></li>
   <li><a href="#comparación-rl-y-árbol-de-decisión" id="toc-comparación-rl-y-árbol-de-decisión" class="nav-link" data-scroll-target="#comparación-rl-y-árbol-de-decisión"><span class="header-section-number">6.1.8</span> Comparación RL y Árbol de Decisión</a></li>
-  <li><a href="#problema" id="toc-problema" class="nav-link" data-scroll-target="#problema"><span class="header-section-number">6.1.9</span> Problema!</a></li>
+  <li><a href="#encontrar-el-balance-entre-sesgo-y-varianza" id="toc-encontrar-el-balance-entre-sesgo-y-varianza" class="nav-link" data-scroll-target="#encontrar-el-balance-entre-sesgo-y-varianza"><span class="header-section-number">6.1.9</span> Encontrar el balance entre sesgo y varianza</a></li>
   </ul></li>
   <li><a href="#random-forest" id="toc-random-forest" class="nav-link" data-scroll-target="#random-forest"><span class="header-section-number">6.2</span> Random Forest</a>
   <ul class="collapse">
@@ -405,6 +405,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ventajas-y-desventajas-1" id="toc-ventajas-y-desventajas-1" class="nav-link" data-scroll-target="#ventajas-y-desventajas-1"><span class="header-section-number">6.2.2</span> Ventajas y desventajas</a></li>
   <li><a href="#aplicación-con-tidymodels" id="toc-aplicación-con-tidymodels" class="nav-link" data-scroll-target="#aplicación-con-tidymodels"><span class="header-section-number">6.2.3</span> Aplicación con tidymodels</a></li>
   <li><a href="#comparación-rl-dt-rf" id="toc-comparación-rl-dt-rf" class="nav-link" data-scroll-target="#comparación-rl-dt-rf"><span class="header-section-number">6.2.4</span> Comparación RL, DT, RF</a></li>
+  <li><a href="#importancia-de-variables" id="toc-importancia-de-variables" class="nav-link" data-scroll-target="#importancia-de-variables"><span class="header-section-number">6.2.5</span> Importancia de variables</a></li>
+  </ul></li>
+  <li><a href="#tuneo-de-hiperparámetros-randon-forest" id="toc-tuneo-de-hiperparámetros-randon-forest" class="nav-link" data-scroll-target="#tuneo-de-hiperparámetros-randon-forest"><span class="header-section-number">6.3</span> Tuneo de hiperparámetros: Randon Forest</a>
+  <ul class="collapse">
+  <li><a href="#indicamos-los-hiperparámetros-a-tunear" id="toc-indicamos-los-hiperparámetros-a-tunear" class="nav-link" data-scroll-target="#indicamos-los-hiperparámetros-a-tunear"><span class="header-section-number">6.3.1</span> Indicamos los hiperparámetros a tunear</a></li>
+  <li><a href="#creamos-un-remuestreo-cv" id="toc-creamos-un-remuestreo-cv" class="nav-link" data-scroll-target="#creamos-un-remuestreo-cv"><span class="header-section-number">6.3.2</span> Creamos un remuestreo CV</a></li>
+  <li><a href="#seleccionamos-el-mejor-modelo" id="toc-seleccionamos-el-mejor-modelo" class="nav-link" data-scroll-target="#seleccionamos-el-mejor-modelo"><span class="header-section-number">6.3.3</span> Seleccionamos el mejor modelo</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -434,15 +441,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="árboles-de-decisión" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="árboles-de-decisión"><span class="header-section-number">6.1</span> Árboles de decisión</h2>
+<p>Luego de utilizar la regresión lineal como un método de aprendizaje supervisado, podemos ahora saltar a un algoritmo más reciente: los árboles de decisión.</p>
+<p><img src="images/linea.jpg" class="img-fluid"></p>
 <section id="definición" class="level3" data-number="6.1.1">
 <h3 data-number="6.1.1" class="anchored" data-anchor-id="definición"><span class="header-section-number">6.1.1</span> Definición</h3>
-<p>Un árbol de decisión es un modelo predictivo que representa un conjunto de reglas “si… entonces…” organizadas en forma de árbol. Parte de un nodo raíz (todos los datos) y, en cada nodo interno, divide los datos según el valor de una variable predictora para reducir la impureza (en regresión: varianza/MSE).</p>
+<p>Un árbol de decisión es un modelo predictivo que representa un conjunto de reglas “si… entonces…” organizadas en forma de árbol. Parte de un nodo raíz (todos los datos) y, en cada nodo interno, divide los datos según el valor de una variable predictora para reducir la varianza /MSE.</p>
 <p><img src="images/arbol.png" class="img-fluid"></p>
-<p>El proceso continúa hasta cumplir criterios de parada (profundidad, mínimo de casos, complejidad) y las hojas entregan la predicción final: promedio de la variable objetivo (regresión).</p>
+<p>El proceso continúa hasta cumplir ciertos criterios de parada (profundidad, mínimo de casos, complejidad) y las hojas entregan la predicción final: promedio de la variable objetivo (regresión).</p>
 <p>También se puede aplicar a <strong>clasificación</strong>. Eso lo veremos más adelante!</p>
 </section>
 <section id="ventajas-y-desventajas" class="level3" data-number="6.1.2">
@@ -451,7 +461,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><p>Interpretables: reglas “si… entonces…” fáciles de explicar.</p></li>
 <li><p>Capturan no linealidades e interacciones sin ingeniería previa.</p></li>
-<li><p>Poco preprocesamiento: no requieren normalizar; toleran outliers mejor que modelos lineales.</p></li>
+<li><p>Poco preprocesamiento: <strong>no requieren normalizar</strong>; toleran outliers mejor que modelos lineales.</p></li>
 <li><p>Mixtos: funcionan con variables numéricas y categóricas.</p></li>
 <li><p>Rápidos de entrenar y útiles para generar hipótesis/segmentaciones.</p></li>
 </ul>
@@ -603,10 +613,38 @@ node), split, n, deviance, yval
           59) pbi_pc&lt; 823.395 2  1.377800 7.310000 *
       15) pbi_pc&lt; 553.69 2  0.312050 7.485000 *</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ══ Workflow [trained] ════════════════════════════════════════════════════</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Preprocessor: Recipe</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Model: decision_tree()</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Preprocessor ──────────────────────────────────────────────────────────</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0 Recipe Steps</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Model ─────────────────────────────────────────────────────────────────</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># n= 59 </span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># node), split, n, deviance, yval</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">#       * denotes terminal node</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  1) root 59 66.593350 5.266441  </span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    2) pbi_pc&gt;=3813.495 39 18.884070 4.723333  </span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co">#      4) pbi_pc&gt;=15749.22 15  3.088373 4.074667  </span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co">#        8) pbi_pc&gt;=54674.97 3  0.706400 3.620000 *</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co">#        9) pbi_pc&lt; 54674.97 12  1.606767 4.188333 *</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co">#      5) pbi_pc&lt; 15749.22 24  5.539462 5.128750 *</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co">#    3) pbi_pc&lt; 3813.495 20 13.773500 6.325500  </span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co">#      6) pbi_pc&gt;=1118.465 11  4.157018 5.922727 *</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co">#      7) pbi_pc&lt; 1118.465 9  5.650956 6.817778  </span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co">#       14) pbi_pc&gt;=553.69 7  4.194143 6.627143  </span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co">#         28) pbi_pc&lt; 735.42 2  0.605000 6.090000 *</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="co">#         29) pbi_pc&gt;=735.42 5  2.781280 6.842000  </span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="co">#           58) pbi_pc&gt;=823.395 3  0.673400 6.530000 *</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co">#           59) pbi_pc&lt; 823.395 2  1.377800 7.310000 *</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co">#       15) pbi_pc&lt; 553.69 2  0.312050 7.485000 *</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>El resultado del modelo lo podemos visualizar con:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Cargando paquete requerido: rpart</code></pre>
 </div>
@@ -619,9 +657,9 @@ Adjuntando el paquete: 'rpart'</code></pre>
 
     prune</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Cannot retrieve the data used to build the model (model.frame: objeto '..y' no encontrado).
 To silence this warning:
@@ -641,20 +679,20 @@ To silence this warning:
 <section id="aplicación-con-dos-predictoras-numéricas" class="level3" data-number="6.1.5">
 <h3 data-number="6.1.5" class="anchored" data-anchor-id="aplicación-con-dos-predictoras-numéricas"><span class="header-section-number">6.1.5</span> Aplicación con dos predictoras numéricas</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mi_receta_arbol <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law, <span class="at">data =</span> training_data)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(arbol)</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>fit_arbol</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mi_receta_arbol <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law, <span class="at">data =</span> training_data)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(arbol)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>fit_arbol</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
 Preprocessor: Recipe
@@ -682,10 +720,10 @@ node), split, n, deviance, yval
 </div>
 <p>El resultado del modelo lo podemos visualizar con:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Cannot retrieve the data used to build the model (model.frame: objeto '..y' no encontrado).
 To silence this warning:
@@ -704,23 +742,23 @@ To silence this warning:
 <section id="aplicación-con-dos-predictoras-numéricas-y-un-factor" class="level3" data-number="6.1.6">
 <h3 data-number="6.1.6" class="anchored" data-anchor-id="aplicación-con-dos-predictoras-numéricas-y-un-factor"><span class="header-section-number">6.1.6</span> Aplicación con dos predictoras numéricas y un factor</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>mi_receta_arbol <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> </span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                            rule_of_law<span class="sc">+</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                            continente, </span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(arbol)</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>fit_arbol</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mi_receta_arbol <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                            rule_of_law<span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                            continente, </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(arbol)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>fit_arbol</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
 Preprocessor: Recipe
@@ -748,9 +786,9 @@ node), split, n, deviance, yval
 </div>
 <p>Lo visualizamos:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rpart.plot</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Cannot retrieve the data used to build the model (model.frame: objeto '..y' no encontrado).
 To silence this warning:
@@ -771,19 +809,10 @@ To silence this warning:
 <p>La importancia de variables es un ranking que indica cuánto aporta cada predictor a las mejoras de predicción del árbol.</p>
 <p>Para qué sirve: priorizar predictores, simplificar cuestionarios/inputs (coste), detectar variables inútiles o fugas de información, y comunicar qué factores “pesan” más en términos predictivos.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Adjuntando el paquete: 'vip'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:utils':
-
-    vi</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -797,27 +826,27 @@ Adjuntando el paquete: 'vip'</code></pre>
 <h3 data-number="6.1.8" class="anchored" data-anchor-id="comparación-rl-y-árbol-de-decisión"><span class="header-section-number">6.1.8</span> Comparación RL y Árbol de Decisión</h3>
 <p>Considerando las mismas variables:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law<span class="sc">+</span> continente, </span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law<span class="sc">+</span> continente, </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>¿Cuál modelo logrará la mejor predicción, la regresión lineal o el árbol de decisión?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>               <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>               <span class="fu">add_model</span>(arbol)</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(testing_data) <span class="sc">|&gt;</span> </span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">bind_cols</span>(<span class="at">valor_real=</span>testing_data<span class="sc">$</span>aml_index) <span class="sc">|&gt;</span> </span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rmse</span>(<span class="at">truth =</span> valor_real,</span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimate =</span> .pred)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>arbol <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>         <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>wf_arbol <span class="ot">&lt;-</span>  <span class="fu">workflow</span>()  <span class="sc">|&gt;</span> </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>               <span class="fu">add_recipe</span>(mi_receta_arbol) <span class="sc">|&gt;</span> </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>               <span class="fu">add_model</span>(arbol)</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="ot">&lt;-</span> wf_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>fit_arbol <span class="sc">|&gt;</span> </span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(testing_data) <span class="sc">|&gt;</span> </span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">bind_cols</span>(<span class="at">valor_real=</span>testing_data<span class="sc">$</span>aml_index) <span class="sc">|&gt;</span> </span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rmse</span>(<span class="at">truth =</span> valor_real,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimate =</span> .pred)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
@@ -828,21 +857,40 @@ Adjuntando el paquete: 'vip'</code></pre>
 <p>En este caso, la regresión lineal ha probado seguir siendo la mejor opción (RMSE = 0.56). No obstante, se encuentran muy cerca en cuanto a su rendimiento.</p>
 <p><img src="images/meofende.jpg" class="img-fluid"></p>
 </section>
-<section id="problema" class="level3" data-number="6.1.9">
-<h3 data-number="6.1.9" class="anchored" data-anchor-id="problema"><span class="header-section-number">6.1.9</span> Problema!</h3>
-<ul>
-<li><p>Sobreajuste (overfitting): Crecen hasta “memorizar” el ruido si no se limitan.</p></li>
-<li><p>Alta varianza / inestabilidad: Pequeños cambios en los datos pueden cambiar mucho la estructura del árbol.</p></li>
-</ul>
-<p>SOLUCIÓN: RANDOM FOREST!</p>
-<p><img src="images/overfittedtree.png" class="img-fluid"></p>
+<section id="encontrar-el-balance-entre-sesgo-y-varianza" class="level3" data-number="6.1.9">
+<h3 data-number="6.1.9" class="anchored" data-anchor-id="encontrar-el-balance-entre-sesgo-y-varianza"><span class="header-section-number">6.1.9</span> Encontrar el balance entre sesgo y varianza</h3>
+<p>En el aprendizaje automático, el desempeño de un modelo predictivo puede entenderse a partir de dos fuentes principales de error: sesgo y varianza.</p>
+<p><strong>ALTO SESGO = UNDERFITTING</strong></p>
+<p><img src="images/UNDERFITTING.png" class="img-fluid"></p>
+<p>El sesgo (bias) hace referencia al error sistemático que introduce un modelo al imponer supuestos demasiado rígidos sobre la relación entre las variables. Un modelo con alto sesgo es incapaz de capturar patrones relevantes de los datos y produce predicciones alejadas de la realidad.</p>
+<p>Este fenómeno se conoce como subajuste (<strong>underfitting</strong>): el modelo resulta demasiado simple para la complejidad del problema.</p>
+<p><strong>ALTA VARIANZA = OVERFITTING</strong></p>
+<p><img src="images/OVERFITTING.png" class="img-fluid"></p>
+<p>Refleja la sensibilidad del modelo a las particularidades de los datos de entrenamiento. Un modelo con alta varianza se ajusta en exceso a las muestras disponibles, incluso capturando ruido o fluctuaciones aleatorias.</p>
+<p>Como consecuencia, presenta un buen desempeño en el conjunto de entrenamiento, pero pierde capacidad de generalización frente a nuevos datos. A este problema se le denomina sobreajuste (<strong>overfitting</strong>).</p>
+<p><strong>BALANCE</strong></p>
+<p><img src="images/GOODFITTING.png" class="img-fluid"></p>
+<p>El objetivo del modelado es encontrar un equilibrio adecuado entre ambos, logrando así un modelo con capacidad de generalizar: ni tan simple que subajuste, ni tan complejo que sobreajuste.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para solucionar este problema en el caso de los árboles podemos probar otro algoritmo denominado RANDON FOREST!</p>
+</div>
+</div>
 </section>
 </section>
 <section id="random-forest" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="random-forest"><span class="header-section-number">6.2</span> Random Forest</h2>
 <section id="definición-1" class="level3" data-number="6.2.1">
 <h3 data-number="6.2.1" class="anchored" data-anchor-id="definición-1"><span class="header-section-number">6.2.1</span> Definición</h3>
-<p>Random Forest es un modelo de ensamble que combina muchos árboles de decisión para mejorar la capacidad de generalización. Cada árbol se entrena sobre una muestra bootstrap (con reemplazo) del conjunto de datos y, en cada división, considera solo un subconjunto aleatorio de predictores (mtry).</p>
+<p>Random Forest es un modelo de ensamble que combina muchos árboles de decisión para mejorar la capacidad de generalización. Cada árbol se entrena sobre una muestra bootstrap (con reemplazo) del conjunto de datos y, en cada división, considera solo un subconjunto aleatorio de predictores.</p>
 <p><img src="images/rf.png" class="img-fluid"></p>
 <p>En regresión, la predicción final es el promedio de los árboles. Esta aleatoriedad + agregación reduce la varianza del árbol individual y hace al modelo robusto sin requerir preprocesamientos complejos.</p>
 </section>
@@ -865,36 +913,37 @@ Adjuntando el paquete: 'vip'</code></pre>
 <h3 data-number="6.2.3" class="anchored" data-anchor-id="aplicación-con-tidymodels"><span class="header-section-number">6.2.3</span> Aplicación con tidymodels</h3>
 <p>Vamos con la misma receta del árbol:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law<span class="sc">+</span> continente, </span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>mi_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(aml_index <span class="sc">~</span> pbi_pc <span class="sc">+</span> rule_of_law<span class="sc">+</span> continente, </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Aplicamos el workflow utilizando la función rand_forest():</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>bosque_model <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">trees =</span> <span class="dv">1000</span>, <span class="at">min_n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, <span class="at">importance =</span> <span class="st">"permutation"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>              <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>bosque_model <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">trees =</span> <span class="dv">1000</span>, </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">min_n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, <span class="at">importance =</span> <span class="st">"permutation"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Iniciamos el workflow():</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>bosque_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                <span class="fu">add_recipe</span>(mi_receta) <span class="sc">|&gt;</span> </span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                <span class="fu">add_model</span>(bosque_model)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>bosque_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>                <span class="fu">add_recipe</span>(mi_receta) <span class="sc">|&gt;</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                <span class="fu">add_model</span>(bosque_model)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ahora fiteamos el modelo y calculamos el RMSE.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="ot">&lt;-</span> bosque_wf <span class="sc">|&gt;</span> </span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="ot">&lt;-</span> bosque_wf <span class="sc">|&gt;</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">fit</span>(training_data)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="comparación-rl-dt-rf" class="level3" data-number="6.2.4">
 <h3 data-number="6.2.4" class="anchored" data-anchor-id="comparación-rl-dt-rf"><span class="header-section-number">6.2.4</span> Comparación RL, DT, RF</h3>
 <p>Excelente!!! Ahora conseguir una mejor performance predictiva!!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="sc">|&gt;</span> </span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(testing_data) <span class="sc">|&gt;</span> </span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">bind_cols</span>(<span class="at">valor_real=</span>testing_data<span class="sc">$</span>aml_index) <span class="sc">|&gt;</span> </span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rmse</span>(<span class="at">truth =</span> valor_real,</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimate =</span> .pred)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="sc">|&gt;</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">predict</span>(testing_data) <span class="sc">|&gt;</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>            <span class="fu">bind_cols</span>(<span class="at">valor_real=</span>testing_data<span class="sc">$</span>aml_index) <span class="sc">|&gt;</span> </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rmse</span>(<span class="at">truth =</span> valor_real,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimate =</span> .pred)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   .metric .estimator .estimate
@@ -902,17 +951,228 @@ Adjuntando el paquete: 'vip'</code></pre>
 1 rmse    standard       0.513</code></pre>
 </div>
 </div>
+</section>
+<section id="importancia-de-variables" class="level3" data-number="6.2.5">
+<h3 data-number="6.2.5" class="anchored" data-anchor-id="importancia-de-variables"><span class="header-section-number">6.2.5</span> Importancia de variables</h3>
 <p>También podemos comprobar la importancia de las variables:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="sc">|&gt;</span> </span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>fit_bosque <span class="sc">|&gt;</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="C6_arboles_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
+</div>
+</div>
+</section>
+</section>
+<section id="tuneo-de-hiperparámetros-randon-forest" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="tuneo-de-hiperparámetros-randon-forest"><span class="header-section-number">6.3</span> Tuneo de hiperparámetros: Randon Forest</h2>
+<p><img src="images/hiper.png" class="img-fluid"></p>
+<p>Los modelos de aprendizaje automático no solo aprenden a partir de los datos, sino que también dependen de una serie de hiperparámetros, es decir, configuraciones definidas por el usuario que controlan cómo se entrena el modelo. Estos hiperparámetros no se ajustan automáticamente durante el entrenamiento (a diferencia de los parámetros internos, como los coeficientes de una regresión), sino que deben seleccionarse por el usuario o analista.</p>
+<p>El proceso de tuning o ajuste de hiperparámetros busca encontrar la combinación de valores que produzca el mejor equilibrio entre sesgo y varianza, logrando así un modelo con mayor capacidad de generalización. Para ello, se utilizan técnicas como la validación cruzada (cross-validation) que aprendimos la clase pasada, la cual permitirá evaluar el desempeño de múltiples configuraciones en diferentes particiones de los datos de entrenamiento.</p>
+<section id="indicamos-los-hiperparámetros-a-tunear" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="indicamos-los-hiperparámetros-a-tunear"><span class="header-section-number">6.3.1</span> Indicamos los hiperparámetros a tunear</h3>
+<p>Aunque el Random Forest ofrece un buen desempeño incluso con sus valores por defecto, el ajuste de hiperparámetros puede mejorar significativamente su capacidad predictiva y eficiencia. Los parámetros más relevantes son mtry (número de predictores considerados en cada división), min_n (tamaño mínimo de los nodos terminales) y trees (número total de árboles). Ajustarlos permite encontrar un mejor balance entre sesgo, varianza y costo computacional, aunque el algoritmo ya se considera robusto frente a problemas de sobreajuste sin necesidad de un tuning intensivo.</p>
+<p>Aplicamos el workflow utilizando la función rand_forest() y colocamos tune() en el hiperparámetro que deseamos tunear. En este caso seleccionamos min_n, el cual indica el número mínimo de casos que existirá en las ramificaciones.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>bosque_model_tune <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">trees =</span> <span class="dv">1000</span>, </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">min_n =</span> <span class="fu">tune</span>()) <span class="sc">|&gt;</span> <span class="co"># OJO CON tune()!!!!!!!</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, </span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                             <span class="at">importance =</span> <span class="st">"permutation"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Iniciamos el workflow():</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>bosque_wf_tune <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>                <span class="fu">add_recipe</span>(mi_receta) <span class="sc">|&gt;</span> </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                <span class="fu">add_model</span>(bosque_model_tune)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="creamos-un-remuestreo-cv" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="creamos-un-remuestreo-cv"><span class="header-section-number">6.3.2</span> Creamos un remuestreo CV</h3>
+<p>Primero, crearemos un conjunto de remuestreos de validación cruzada para el ajuste. Esto es necesario porque no podemos aprender los valores correctos al entrenar un solo modelo, pero sí podemos entrenar varios modelos y ver cuáles funcionan mejor.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(training_data, <span class="at">v=</span> <span class="dv">5</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ahora seleccionamos una grilla (o una tabla) con los valores que vamos a probar en los distintos ajustes:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>tune_rf <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(bosque_wf_tune,</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">resamples =</span> folds, </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">grid =</span> <span class="dv">10</span>)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>tune_rf</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Tuning results
+# 5-fold cross-validation 
+# A tibble: 5 × 4
+  splits          id    .metrics          .notes          
+  &lt;list&gt;          &lt;chr&gt; &lt;list&gt;            &lt;list&gt;          
+1 &lt;split [47/12]&gt; Fold1 &lt;tibble [20 × 5]&gt; &lt;tibble [0 × 4]&gt;
+2 &lt;split [47/12]&gt; Fold2 &lt;tibble [20 × 5]&gt; &lt;tibble [0 × 4]&gt;
+3 &lt;split [47/12]&gt; Fold3 &lt;tibble [20 × 5]&gt; &lt;tibble [0 × 4]&gt;
+4 &lt;split [47/12]&gt; Fold4 &lt;tibble [20 × 5]&gt; &lt;tibble [0 × 4]&gt;
+5 &lt;split [48/11]&gt; Fold5 &lt;tibble [20 × 5]&gt; &lt;tibble [0 × 4]&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#       splits      id    .metrics   .notes  </span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;S3: vfold_split&gt; Fold1   &lt;tibble&gt;    &lt;tibble&gt;    </span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;S3: vfold_split&gt; Fold2   &lt;tibble&gt;    &lt;tibble&gt;    </span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;S3: vfold_split&gt; Fold3   &lt;tibble&gt;    &lt;tibble&gt;    </span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;S3: vfold_split&gt; Fold4   &lt;tibble&gt;    &lt;tibble&gt;    </span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;S3: vfold_split&gt; Fold5   &lt;tibble&gt;    &lt;tibble&gt;    </span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Veamos los resultados.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>tune_rf <span class="sc">|&gt;</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.metric<span class="sc">==</span><span class="st">"rmse"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 7
+   min_n .metric .estimator  mean     n std_err .config         
+   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;           
+ 1     2 rmse    standard   0.627     5  0.0558 pre0_mod01_post0
+ 2     6 rmse    standard   0.619     5  0.0514 pre0_mod02_post0
+ 3    10 rmse    standard   0.622     5  0.0497 pre0_mod03_post0
+ 4    15 rmse    standard   0.633     5  0.0518 pre0_mod04_post0
+ 5    19 rmse    standard   0.633     5  0.0487 pre0_mod05_post0
+ 6    22 rmse    standard   0.638     5  0.0491 pre0_mod06_post0
+ 7    25 rmse    standard   0.649     5  0.0480 pre0_mod07_post0
+ 8    29 rmse    standard   0.661     5  0.0465 pre0_mod08_post0
+ 9    34 rmse    standard   0.686     5  0.0388 pre0_mod09_post0
+10    40 rmse    standard   0.718     5  0.0341 pre0_mod10_post0</code></pre>
+</div>
+</div>
+<p>Al parecer los valores bajos de min_n funcionan mejor que los altos. Esto claramente se debe al poco número de casos que tiene nuestra base de datos. Probemos con otros valores bajos a ver si conseguimos una mejor performance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>rf_grid <span class="ot">&lt;-</span>  <span class="fu">grid_regular</span>(<span class="fu">min_n</span>(<span class="at">range=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">8</span>)), <span class="at">levels =</span> <span class="dv">5</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>rf_grid</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 1
+  min_n
+  &lt;int&gt;
+1     2
+2     3
+3     5
+4     6
+5     8</code></pre>
+</div>
+</div>
+<p>Solicitamos nuevamente el ajuste del modelo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>tune_rf <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(bosque_wf_tune,</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">resamples =</span> folds, </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">grid =</span> rf_grid) <span class="do">### AHORA LO ESPECIFICAMOS AÚN MÁS!</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>tune_rf</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Tuning results
+# 5-fold cross-validation 
+# A tibble: 5 × 4
+  splits          id    .metrics          .notes          
+  &lt;list&gt;          &lt;chr&gt; &lt;list&gt;            &lt;list&gt;          
+1 &lt;split [47/12]&gt; Fold1 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 4]&gt;
+2 &lt;split [47/12]&gt; Fold2 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 4]&gt;
+3 &lt;split [47/12]&gt; Fold3 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 4]&gt;
+4 &lt;split [47/12]&gt; Fold4 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 4]&gt;
+5 &lt;split [48/11]&gt; Fold5 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 4]&gt;</code></pre>
+</div>
+</div>
+<p>Vemos nuevamente los resultados:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>tune_rf <span class="sc">|&gt;</span> </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 7
+   min_n .metric .estimator  mean     n std_err .config        
+   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
+ 1     2 rmse    standard   0.625     5  0.0556 pre0_mod1_post0
+ 2     2 rsq     standard   0.690     5  0.0767 pre0_mod1_post0
+ 3     3 rmse    standard   0.625     5  0.0546 pre0_mod2_post0
+ 4     3 rsq     standard   0.690     5  0.0778 pre0_mod2_post0
+ 5     5 rmse    standard   0.626     5  0.0517 pre0_mod3_post0
+ 6     5 rsq     standard   0.694     5  0.0744 pre0_mod3_post0
+ 7     6 rmse    standard   0.622     5  0.0519 pre0_mod4_post0
+ 8     6 rsq     standard   0.695     5  0.0741 pre0_mod4_post0
+ 9     8 rmse    standard   0.619     5  0.0518 pre0_mod5_post0
+10     8 rsq     standard   0.699     5  0.0769 pre0_mod5_post0</code></pre>
+</div>
+</div>
+</section>
+<section id="seleccionamos-el-mejor-modelo" class="level3" data-number="6.3.3">
+<h3 data-number="6.3.3" class="anchored" data-anchor-id="seleccionamos-el-mejor-modelo"><span class="header-section-number">6.3.3</span> Seleccionamos el mejor modelo</h3>
+<p>Una vez probado con diversas posibilidades para nuestro hiperparámetro en cuestión, vamos a seleccionar nuestro mejor resultado para finalmente ir a modelar.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>best_rmse <span class="ot">&lt;-</span> <span class="fu">select_best</span>(tune_rf,        <span class="co"># Usamos nuestro último modelo</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">metric =</span><span class="st">"rmse"</span>) <span class="co"># Seleccionamos el criterio</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Colocamos finalizar modelo, porque vamos a finalizar el modelo con el tune().</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>final_rf <span class="ot">&lt;-</span> <span class="fu">finalize_model</span>(bosque_model_tune,</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                           best_rmse)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>final_rf</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Random Forest Model Specification (regression)
+
+Main Arguments:
+  trees = 1000
+  min_n = 8
+
+Engine-Specific Arguments:
+  importance = permutation
+
+Computational engine: ranger </code></pre>
+</div>
+</div>
+<p>Exploremos el modelo final.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>final_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>              <span class="fu">add_recipe</span>(mi_receta) <span class="sc">|&gt;</span> </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>              <span class="fu">add_model</span>(final_rf)</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>final_evaluation <span class="ot">&lt;-</span> final_wf <span class="sc">|&gt;</span> </span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">last_fit</span>(index)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>¿last_fit() vs fit()?</strong></p>
+<p>¿Qué hace last_fit():</p>
+<ul>
+<li><p>Toma un split de rsample (creado con initial_split()).</p></li>
+<li><p>Entrena el workflow en training y evalúa en testing automáticamente.</p></li>
+<li><p>Devuelve métricas en test (collect_metrics()), además del workflow final ajustado (útil para predict()).</p></li>
+</ul>
+<p>¿Por qué se prefiere a fit() para la evaluación final</p>
+<ul>
+<li><p>Evita fugas de información: nunca toca el test durante el entrenamiento.</p></li>
+<li><p>Estandariza el “examen final”: un solo paso que entrena en train y reporta métricas en test.</p></li>
+<li><p>Respeta la recipe tal como quedó definida (pasos de preprocesamiento se estiman solo con train y se aplican a test correctamente).</p></li>
+<li><p>Produce un objeto listo para inspección y despliegue (extraer modelo, predicciones, etc.).</p></li>
+</ul>
+</div>
+</div>
+<p>Finalmente, solicitamos las métricas finales.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>final_evaluation <span class="sc">|&gt;</span> </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  .metric .estimator .estimate .config        
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
+1 rmse    standard       0.524 pre0_mod0_post0
+2 rsq     standard       0.892 pre0_mod0_post0</code></pre>
 </div>
 </div>
 

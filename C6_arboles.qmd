@@ -5,17 +5,22 @@
 #| warning: false
 library(tidyverse)
 library(tidymodels)
+library(vip)
 ```
 
 ## Árboles de decisión
 
+Luego de utilizar la regresión lineal como un método de aprendizaje supervisado, podemos ahora saltar a un algoritmo más reciente: los árboles de decisión. 
+
+![](images/linea.jpg)
+
 ### Definición
 
-Un árbol de decisión es un modelo predictivo que representa un conjunto de reglas “si… entonces…” organizadas en forma de árbol. Parte de un nodo raíz (todos los datos) y, en cada nodo interno, divide los datos según el valor de una variable predictora para reducir la impureza (en regresión: varianza/MSE).
+Un árbol de decisión es un modelo predictivo que representa un conjunto de reglas “si… entonces…” organizadas en forma de árbol. Parte de un nodo raíz (todos los datos) y, en cada nodo interno, divide los datos según el valor de una variable predictora para reducir la varianza /MSE.
 
 ![](images/arbol.png)
 
-El proceso continúa hasta cumplir criterios de parada (profundidad, mínimo de casos, complejidad) y las hojas entregan la predicción final: promedio de la variable objetivo (regresión).
+El proceso continúa hasta cumplir ciertos criterios de parada (profundidad, mínimo de casos, complejidad) y las hojas entregan la predicción final: promedio de la variable objetivo (regresión).
 
 También se puede aplicar a **clasificación**. Eso lo veremos más adelante!
 
@@ -27,7 +32,7 @@ También se puede aplicar a **clasificación**. Eso lo veremos más adelante!
 
 -   Capturan no linealidades e interacciones sin ingeniería previa.
 
--   Poco preprocesamiento: no requieren normalizar; toleran outliers mejor que modelos lineales.
+-   Poco preprocesamiento: **no requieren normalizar**; toleran outliers mejor que modelos lineales.
 
 -   Mixtos: funcionan con variables numéricas y categóricas.
 
@@ -141,11 +146,41 @@ wf_arbol <-  workflow()  |>
   add_model(arbol)
 ```
 
+
 ```{r}
 fit_arbol <- wf_arbol |> 
               fit(training_data)
 
 fit_arbol
+
+# ══ Workflow [trained] ════════════════════════════════════════════════════
+# Preprocessor: Recipe
+# Model: decision_tree()
+# 
+# ── Preprocessor ──────────────────────────────────────────────────────────
+# 0 Recipe Steps
+# 
+# ── Model ─────────────────────────────────────────────────────────────────
+# n= 59 
+# 
+# node), split, n, deviance, yval
+#       * denotes terminal node
+# 
+#  1) root 59 66.593350 5.266441  
+#    2) pbi_pc>=3813.495 39 18.884070 4.723333  
+#      4) pbi_pc>=15749.22 15  3.088373 4.074667  
+#        8) pbi_pc>=54674.97 3  0.706400 3.620000 *
+#        9) pbi_pc< 54674.97 12  1.606767 4.188333 *
+#      5) pbi_pc< 15749.22 24  5.539462 5.128750 *
+#    3) pbi_pc< 3813.495 20 13.773500 6.325500  
+#      6) pbi_pc>=1118.465 11  4.157018 5.922727 *
+#      7) pbi_pc< 1118.465 9  5.650956 6.817778  
+#       14) pbi_pc>=553.69 7  4.194143 6.627143  
+#         28) pbi_pc< 735.42 2  0.605000 6.090000 *
+#         29) pbi_pc>=735.42 5  2.781280 6.842000  
+#           58) pbi_pc>=823.395 3  0.673400 6.530000 *
+#           59) pbi_pc< 823.395 2  1.377800 7.310000 *
+#       15) pbi_pc< 553.69 2  0.312050 7.485000 *
 ```
 
 El resultado del modelo lo podemos visualizar con:
@@ -264,21 +299,44 @@ En este caso, la regresión lineal ha probado seguir siendo la mejor opción (RM
 
 ![](images/meofende.jpg)
 
-### Problema!
+### Encontrar el balance entre sesgo y varianza
 
--   Sobreajuste (overfitting): Crecen hasta “memorizar” el ruido si no se limitan.
+En el aprendizaje automático, el desempeño de un modelo predictivo puede entenderse a partir de dos fuentes principales de error: sesgo y varianza.
 
--   Alta varianza / inestabilidad: Pequeños cambios en los datos pueden cambiar mucho la estructura del árbol.
+**ALTO SESGO = UNDERFITTING**
 
-SOLUCIÓN: RANDOM FOREST!
+![](images/UNDERFITTING.png)
 
-![](images/overfittedtree.png)
+El sesgo (bias) hace referencia al error sistemático que introduce un modelo al imponer supuestos demasiado rígidos sobre la relación entre las variables. Un modelo con alto sesgo es incapaz de capturar patrones relevantes de los datos y produce predicciones alejadas de la realidad.
+
+Este fenómeno se conoce como subajuste (**underfitting**): el modelo resulta demasiado simple para la complejidad del problema.
+
+
+**ALTA VARIANZA = OVERFITTING**
+
+![](images/OVERFITTING.png)
+
+Refleja la sensibilidad del modelo a las particularidades de los datos de entrenamiento. Un modelo con alta varianza se ajusta en exceso a las muestras disponibles, incluso capturando ruido o fluctuaciones aleatorias.
+
+Como consecuencia, presenta un buen desempeño en el conjunto de entrenamiento, pero pierde capacidad de generalización frente a nuevos datos. A este problema se le denomina sobreajuste (**overfitting**).
+
+
+**BALANCE**
+
+![](images/GOODFITTING.png)
+
+El objetivo del modelado es encontrar un equilibrio adecuado entre ambos, logrando así un modelo con capacidad de generalizar: ni tan simple que subajuste, ni tan complejo que sobreajuste.
+
+
+::: callout-tip
+Para solucionar este problema en el caso de los árboles podemos probar otro algoritmo denominado RANDON FOREST!
+:::
 
 ## Random Forest
 
 ### Definición
 
-Random Forest es un modelo de ensamble que combina muchos árboles de decisión para mejorar la capacidad de generalización. Cada árbol se entrena sobre una muestra bootstrap (con reemplazo) del conjunto de datos y, en cada división, considera solo un subconjunto aleatorio de predictores (mtry).
+Random Forest es un modelo de ensamble que combina muchos árboles de decisión para mejorar la capacidad de generalización. Cada árbol se entrena sobre una muestra bootstrap (con reemplazo) del conjunto de datos y, en cada división, considera solo un subconjunto aleatorio de predictores.
 
 ![](images/rf.png)
 
@@ -302,6 +360,7 @@ En regresión, la predicción final es el promedio de los árboles. Esta aleator
 
 -   Puede ser pesado en memoria/tiempo con muchos árboles o datos muy grandes.
 
+
 ### Aplicación con tidymodels
 
 Vamos con la misma receta del árbol:
@@ -314,9 +373,10 @@ mi_receta <- recipe(aml_index ~ pbi_pc + rule_of_law+ continente,
 Aplicamos el workflow utilizando la función rand_forest():
 
 ```{r}
-bosque_model <- rand_forest(trees = 1000, min_n = 5) |> 
-              set_engine("ranger", importance = "permutation") |> 
-              set_mode("regression")
+bosque_model <- rand_forest(trees = 1000, 
+                            min_n = 5) |> 
+                  set_engine("ranger", importance = "permutation") |> 
+                  set_mode("regression")
 ```
 
 Iniciamos el workflow():
@@ -346,6 +406,8 @@ fit_bosque |>
                  estimate = .pred)
 ```
 
+### Importancia de variables
+
 También podemos comprobar la importancia de las variables:
 
 ```{r}
@@ -353,3 +415,158 @@ fit_bosque |>
   extract_fit_engine() |> 
   vip()
 ```
+
+
+
+## Tuneo de hiperparámetros: Randon Forest
+
+![](images/hiper.png)
+
+Los modelos de aprendizaje automático no solo aprenden a partir de los datos, sino que también dependen de una serie de hiperparámetros, es decir, configuraciones definidas por el usuario que controlan cómo se entrena el modelo. Estos hiperparámetros no se ajustan automáticamente durante el entrenamiento (a diferencia de los parámetros internos, como los coeficientes de una regresión), sino que deben seleccionarse por el usuario o analista.
+
+El proceso de tuning o ajuste de hiperparámetros busca encontrar la combinación de valores que produzca el mejor equilibrio entre sesgo y varianza, logrando así un modelo con mayor capacidad de generalización. Para ello, se utilizan técnicas como la validación cruzada (cross-validation) que aprendimos la clase pasada, la cual permitirá evaluar el desempeño de múltiples configuraciones en diferentes particiones de los datos de entrenamiento.
+
+
+### Indicamos los hiperparámetros a tunear
+
+Aunque el Random Forest ofrece un buen desempeño incluso con sus valores por defecto, el ajuste de hiperparámetros puede mejorar significativamente su capacidad predictiva y eficiencia. Los parámetros más relevantes son mtry (número de predictores considerados en cada división), min_n (tamaño mínimo de los nodos terminales) y trees (número total de árboles). Ajustarlos permite encontrar un mejor balance entre sesgo, varianza y costo computacional, aunque el algoritmo ya se considera robusto frente a problemas de sobreajuste sin necesidad de un tuning intensivo.
+
+Aplicamos el workflow utilizando la función rand_forest() y colocamos tune() en el hiperparámetro que deseamos tunear. En este caso seleccionamos min_n, el cual indica el número mínimo de casos que existirá en las ramificaciones. 
+
+```{r}
+bosque_model_tune <- rand_forest(trees = 1000, 
+                            min_n = tune()) |> # OJO CON tune()!!!!!!!
+                  set_engine("ranger", 
+                             importance = "permutation") |> 
+                  set_mode("regression")
+```
+
+Iniciamos el workflow():
+
+```{r}
+bosque_wf_tune <- workflow() |> 
+                add_recipe(mi_receta) |> 
+                add_model(bosque_model_tune)
+```
+
+
+### Creamos un remuestreo CV
+
+Primero, crearemos un conjunto de remuestreos de validación cruzada para el ajuste. Esto es necesario porque no podemos aprender los valores correctos al entrenar un solo modelo, pero sí podemos entrenar varios modelos y ver cuáles funcionan mejor. 
+
+```{r}
+set.seed(2025)
+folds <- vfold_cv(training_data, v= 5)
+```
+
+Ahora seleccionamos una grilla (o una tabla) con los valores que vamos a probar en los distintos ajustes:
+
+```{r}
+tune_rf <- tune_grid(bosque_wf_tune,
+                     resamples = folds, 
+                     grid = 10)
+
+tune_rf
+
+#       splits      id    .metrics   .notes  
+# <S3: vfold_split>	Fold1	<tibble>	<tibble>	
+# <S3: vfold_split>	Fold2	<tibble>	<tibble>	
+# <S3: vfold_split>	Fold3	<tibble>	<tibble>	
+# <S3: vfold_split>	Fold4	<tibble>	<tibble>	
+# <S3: vfold_split>	Fold5	<tibble>	<tibble>	
+
+
+```
+
+
+Veamos los resultados. 
+
+```{r}
+tune_rf |> 
+  collect_metrics() |> 
+  filter(.metric=="rmse")
+```
+
+Al parecer los valores bajos de min_n funcionan mejor que los altos. Esto claramente se debe al poco número de casos que tiene nuestra base de datos. Probemos con otros valores bajos a ver si conseguimos una mejor performance. 
+
+```{r}
+rf_grid <-  grid_regular(min_n(range=c(2,8)), levels = 5)
+rf_grid
+```
+
+Solicitamos nuevamente el ajuste del modelo:
+
+```{r}
+tune_rf <- tune_grid(bosque_wf_tune,
+                     resamples = folds, 
+                     grid = rf_grid) ### AHORA LO ESPECIFICAMOS AÚN MÁS!
+
+tune_rf
+```
+
+Vemos nuevamente los resultados:
+
+```{r}
+tune_rf |> 
+  collect_metrics()
+```
+
+
+### Seleccionamos el mejor modelo
+
+Una vez probado con diversas posibilidades para nuestro hiperparámetro en cuestión, vamos a seleccionar nuestro mejor resultado para finalmente ir a modelar. 
+
+```{r}
+best_rmse <- select_best(tune_rf,        # Usamos nuestro último modelo
+                         metric ="rmse") # Seleccionamos el criterio
+```
+
+Colocamos finalizar modelo, porque vamos a finalizar el modelo con el tune().
+
+```{r}
+final_rf <- finalize_model(bosque_model_tune,
+                           best_rmse)
+
+final_rf
+```
+
+Exploremos el modelo final. 
+
+```{r}
+final_wf <- workflow() |> 
+              add_recipe(mi_receta) |> 
+              add_model(final_rf)
+
+final_evaluation <- final_wf |> 
+                      last_fit(index)
+```
+
+::: callout-tip
+**¿last_fit() vs fit()?**
+
+¿Qué hace last_fit():
+
+- Toma un split de rsample (creado con initial_split()).
+
+- Entrena el workflow en training y evalúa en testing automáticamente.
+
+- Devuelve métricas en test (collect_metrics()), además del workflow final ajustado (útil para predict()).
+
+¿Por qué se prefiere a fit() para la evaluación final
+
+- Evita fugas de información: nunca toca el test durante el entrenamiento.
+
+- Estandariza el “examen final”: un solo paso que entrena en train y reporta métricas en test.
+
+- Respeta la recipe tal como quedó definida (pasos de preprocesamiento se estiman solo con train y se aplican a test correctamente).
+
+- Produce un objeto listo para inspección y despliegue (extraer modelo, predicciones, etc.).
+:::
+
+Finalmente, solicitamos las métricas finales. 
+
+```{r}
+final_evaluation |> 
+  collect_metrics()
+```
+
