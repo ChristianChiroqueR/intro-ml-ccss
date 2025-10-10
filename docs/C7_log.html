@@ -430,7 +430,7 @@ window.Quarto = {
   <li><a href="#paso-3-split-de-la-data" id="toc-paso-3-split-de-la-data" class="nav-link" data-scroll-target="#paso-3-split-de-la-data">Paso 3: Split de la data</a></li>
   <li><a href="#paso-4-construcción-de-wf-receta-modelo-wf" id="toc-paso-4-construcción-de-wf-receta-modelo-wf" class="nav-link" data-scroll-target="#paso-4-construcción-de-wf-receta-modelo-wf">Paso 4: Construcción de WF: Receta + Modelo + WF</a></li>
   <li><a href="#paso-5-entrenamos-el-modelo-con-cv-y-analizamos-rendimiento" id="toc-paso-5-entrenamos-el-modelo-con-cv-y-analizamos-rendimiento" class="nav-link" data-scroll-target="#paso-5-entrenamos-el-modelo-con-cv-y-analizamos-rendimiento">Paso 5: Entrenamos el modelo con CV y analizamos rendimiento</a></li>
-  <li><a href="#paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit" id="toc-paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit" class="nav-link" data-scroll-target="#paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit">Paso 6: Fiteamos y evaluamos con todo el entrenamiento con last_fit()</a></li>
+  <li><a href="#paso-6-fiteamos-y-evaluamos-con-last_fit" id="toc-paso-6-fiteamos-y-evaluamos-con-last_fit" class="nav-link" data-scroll-target="#paso-6-fiteamos-y-evaluamos-con-last_fit">Paso 6: Fiteamos y evaluamos con last_fit()</a></li>
   </ul></li>
   <li><a href="#extra-interpretabilidad-de-la-regresión-logística" id="toc-extra-interpretabilidad-de-la-regresión-logística" class="nav-link" data-scroll-target="#extra-interpretabilidad-de-la-regresión-logística"><span class="header-section-number">7.3</span> Extra: Interpretabilidad de la regresión logística</a></li>
   <li><a href="#comparación-entre-rl-y-rf" id="toc-comparación-entre-rl-y-rf" class="nav-link" data-scroll-target="#comparación-entre-rl-y-rf"><span class="header-section-number">7.4</span> Comparación entre RL Y RF</a></li>
@@ -504,8 +504,8 @@ Nota
 <p>Para fines de esta clase, he preparado un subset de esta data original, haciendo algunas ediciones.</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 24%">
-<col style="width: 24%">
+<col style="width: 25%">
+<col style="width: 25%">
 <col style="width: 50%">
 </colgroup>
 <thead>
@@ -644,23 +644,23 @@ Nota
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">include =</span> <span class="fu">everything</span>(),<span class="co"># Incluye todas las variables</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>)) </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="gcxdvtqbwb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gcxdvtqbwb table {
+<div id="ctanyjzfiq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ctanyjzfiq table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gcxdvtqbwb thead, #gcxdvtqbwb tbody, #gcxdvtqbwb tfoot, #gcxdvtqbwb tr, #gcxdvtqbwb td, #gcxdvtqbwb th {
+#ctanyjzfiq thead, #ctanyjzfiq tbody, #ctanyjzfiq tfoot, #ctanyjzfiq tr, #ctanyjzfiq td, #ctanyjzfiq th {
   border-style: none;
 }
 
-#gcxdvtqbwb p {
+#ctanyjzfiq p {
   margin: 0;
   padding: 0;
 }
 
-#gcxdvtqbwb .gt_table {
+#ctanyjzfiq .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -686,12 +686,12 @@ Nota
   border-left-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_caption {
+#ctanyjzfiq .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gcxdvtqbwb .gt_title {
+#ctanyjzfiq .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -703,7 +703,7 @@ Nota
   border-bottom-width: 0;
 }
 
-#gcxdvtqbwb .gt_subtitle {
+#ctanyjzfiq .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -715,7 +715,7 @@ Nota
   border-top-width: 0;
 }
 
-#gcxdvtqbwb .gt_heading {
+#ctanyjzfiq .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -727,13 +727,13 @@ Nota
   border-right-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_bottom_border {
+#ctanyjzfiq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_col_headings {
+#ctanyjzfiq .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -748,7 +748,7 @@ Nota
   border-right-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_col_heading {
+#ctanyjzfiq .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -768,7 +768,7 @@ Nota
   overflow-x: hidden;
 }
 
-#gcxdvtqbwb .gt_column_spanner_outer {
+#ctanyjzfiq .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -780,15 +780,15 @@ Nota
   padding-right: 4px;
 }
 
-#gcxdvtqbwb .gt_column_spanner_outer:first-child {
+#ctanyjzfiq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gcxdvtqbwb .gt_column_spanner_outer:last-child {
+#ctanyjzfiq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gcxdvtqbwb .gt_column_spanner {
+#ctanyjzfiq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -800,11 +800,11 @@ Nota
   width: 100%;
 }
 
-#gcxdvtqbwb .gt_spanner_row {
+#ctanyjzfiq .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gcxdvtqbwb .gt_group_heading {
+#ctanyjzfiq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -830,7 +830,7 @@ Nota
   text-align: left;
 }
 
-#gcxdvtqbwb .gt_empty_group_heading {
+#ctanyjzfiq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -845,15 +845,15 @@ Nota
   vertical-align: middle;
 }
 
-#gcxdvtqbwb .gt_from_md > :first-child {
+#ctanyjzfiq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gcxdvtqbwb .gt_from_md > :last-child {
+#ctanyjzfiq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gcxdvtqbwb .gt_row {
+#ctanyjzfiq .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -872,7 +872,7 @@ Nota
   overflow-x: hidden;
 }
 
-#gcxdvtqbwb .gt_stub {
+#ctanyjzfiq .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -885,7 +885,7 @@ Nota
   padding-right: 5px;
 }
 
-#gcxdvtqbwb .gt_stub_row_group {
+#ctanyjzfiq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -899,15 +899,15 @@ Nota
   vertical-align: top;
 }
 
-#gcxdvtqbwb .gt_row_group_first td {
+#ctanyjzfiq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gcxdvtqbwb .gt_row_group_first th {
+#ctanyjzfiq .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gcxdvtqbwb .gt_summary_row {
+#ctanyjzfiq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -917,16 +917,16 @@ Nota
   padding-right: 5px;
 }
 
-#gcxdvtqbwb .gt_first_summary_row {
+#ctanyjzfiq .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_first_summary_row.thick {
+#ctanyjzfiq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gcxdvtqbwb .gt_last_summary_row {
+#ctanyjzfiq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -936,7 +936,7 @@ Nota
   border-bottom-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_grand_summary_row {
+#ctanyjzfiq .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -946,7 +946,7 @@ Nota
   padding-right: 5px;
 }
 
-#gcxdvtqbwb .gt_first_grand_summary_row {
+#ctanyjzfiq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -956,7 +956,7 @@ Nota
   border-top-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_last_grand_summary_row_top {
+#ctanyjzfiq .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -966,11 +966,11 @@ Nota
   border-bottom-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_striped {
+#ctanyjzfiq .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gcxdvtqbwb .gt_table_body {
+#ctanyjzfiq .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -979,7 +979,7 @@ Nota
   border-bottom-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_footnotes {
+#ctanyjzfiq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -993,7 +993,7 @@ Nota
   border-right-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_footnote {
+#ctanyjzfiq .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1002,7 +1002,7 @@ Nota
   padding-right: 5px;
 }
 
-#gcxdvtqbwb .gt_sourcenotes {
+#ctanyjzfiq .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1016,7 +1016,7 @@ Nota
   border-right-color: #D3D3D3;
 }
 
-#gcxdvtqbwb .gt_sourcenote {
+#ctanyjzfiq .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1024,72 +1024,72 @@ Nota
   padding-right: 5px;
 }
 
-#gcxdvtqbwb .gt_left {
+#ctanyjzfiq .gt_left {
   text-align: left;
 }
 
-#gcxdvtqbwb .gt_center {
+#ctanyjzfiq .gt_center {
   text-align: center;
 }
 
-#gcxdvtqbwb .gt_right {
+#ctanyjzfiq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gcxdvtqbwb .gt_font_normal {
+#ctanyjzfiq .gt_font_normal {
   font-weight: normal;
 }
 
-#gcxdvtqbwb .gt_font_bold {
+#ctanyjzfiq .gt_font_bold {
   font-weight: bold;
 }
 
-#gcxdvtqbwb .gt_font_italic {
+#ctanyjzfiq .gt_font_italic {
   font-style: italic;
 }
 
-#gcxdvtqbwb .gt_super {
+#ctanyjzfiq .gt_super {
   font-size: 65%;
 }
 
-#gcxdvtqbwb .gt_footnote_marks {
+#ctanyjzfiq .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gcxdvtqbwb .gt_asterisk {
+#ctanyjzfiq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gcxdvtqbwb .gt_indent_1 {
+#ctanyjzfiq .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gcxdvtqbwb .gt_indent_2 {
+#ctanyjzfiq .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gcxdvtqbwb .gt_indent_3 {
+#ctanyjzfiq .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gcxdvtqbwb .gt_indent_4 {
+#ctanyjzfiq .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gcxdvtqbwb .gt_indent_5 {
+#ctanyjzfiq .gt_indent_5 {
   text-indent: 25px;
 }
 
-#gcxdvtqbwb .katex-display {
+#ctanyjzfiq .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#gcxdvtqbwb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ctanyjzfiq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1423,8 +1423,8 @@ Nota
 </div>
 </div>
 </section>
-<section id="paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit">Paso 6: Fiteamos y evaluamos con todo el entrenamiento con last_fit()</h3>
+<section id="paso-6-fiteamos-y-evaluamos-con-last_fit" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="paso-6-fiteamos-y-evaluamos-con-last_fit">Paso 6: Fiteamos y evaluamos con last_fit()</h3>
 <p>Entrenamos el modelo final usando todos los datos de entrenamiento y lo evaluamos en el conjunto de prueba.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico_final <span class="ot">&lt;-</span> lr_wf <span class="sc">|&gt;</span> <span class="fu">last_fit</span>(split, <span class="at">metrics =</span> mis_metricas)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>

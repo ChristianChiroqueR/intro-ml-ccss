@@ -44,7 +44,7 @@ En este caso vamos a utilizar la data "Predict Students' Dropout and Academic Su
 Para fines de esta clase, he preparado un subset de esta data original, haciendo algunas ediciones.
 
 | Variable | Nombre | Detalle |
-|------------------|------------------|-------------------------------------|
+|------------------|------------------|------------------------------------|
 | Estado civil | `marital_status` | 1 – single · 2 – married · 3 – widower · 4 – divorced · 5 – facto union · 6 – legally separated |
 | Turno | `day_or_night` | Factor (Sí – No) |
 | Calificación previa a ingresar | `previous_qualification` | Continua (entre 0 a 200) |
@@ -220,7 +220,7 @@ Sensitivity (Sensibilidad o Recall): Indica la capacidad del modelo para detecta
 Specificity (Especificidad) Mide la capacidad del modelo para identificar correctamente los negativos reales. Es especialmente importante cuando un falso positivo genera consecuencias indeseadas o costosas. Por ejemplo, en un sistema de detección de lavado de activos, una baja especificidad haría que muchas operaciones legítimas sean marcadas como sospechosas, generando sobrecarga en los analistas y pérdida de confianza en el sistema.
 :::
 
-### Paso 6: Fiteamos y evaluamos con todo el entrenamiento con last_fit() {.unnumbered}
+### Paso 6: Fiteamos y evaluamos con last_fit() {.unnumbered}
 
 Entrenamos el modelo final usando todos los datos de entrenamiento y lo evaluamos en el conjunto de prueba.
 
@@ -257,9 +257,7 @@ collect_predictions(modelo_logistico_final) %>%
   autoplot(type = "heatmap")
 ```
 
-
 EJERCICIO: Prueba calculando las métricas (accuracy, specificity, sensitivity) manualmente usando la matriz de confusión!
-
 
 ## Extra: Interpretabilidad de la regresión logística
 
