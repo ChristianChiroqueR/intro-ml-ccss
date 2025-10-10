@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; Regresión logística – Introducción al Machine Learning aplicado a las Ciencias Sociales</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./C6_arboles.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-b9e11ad5a37ead2aabff839d95ae3857.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./C4_RL.html">Métodos supervisados</a></li><li class="breadcrumb-item"><a href="./C7_log.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regresión logística</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introducción al Machine Learning aplicado a las Ciencias Sociales</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notas preliminares</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Análisis exploratorio de datos para ML</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C1_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción al R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C2_EDA1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Primeros pasos con tidyverse</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C3_EDA2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Exploración avanzada</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Métodos supervisados</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C4_RL.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regresión Lineal</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C5_RL2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Preprocesamiento y validación cruzada</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C6_arboles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Árboles de decisión y Random Forest</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C7_log.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regresión logística</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#antecedentes" id="toc-antecedentes" class="nav-link active" data-scroll-target="#antecedentes"><span class="header-section-number">7.1</span> Antecedentes</a></li>
+  <li><a href="#proceso" id="toc-proceso" class="nav-link" data-scroll-target="#proceso"><span class="header-section-number">7.2</span> Proceso</a>
+  <ul class="collapse">
+  <li><a href="#paso-1-apertura-de-dataset" id="toc-paso-1-apertura-de-dataset" class="nav-link" data-scroll-target="#paso-1-apertura-de-dataset">Paso 1: Apertura de dataset</a></li>
+  <li><a href="#paso-2-eda" id="toc-paso-2-eda" class="nav-link" data-scroll-target="#paso-2-eda">Paso 2: EDA</a></li>
+  <li><a href="#paso-3-split-de-la-data" id="toc-paso-3-split-de-la-data" class="nav-link" data-scroll-target="#paso-3-split-de-la-data">Paso 3: Split de la data</a></li>
+  <li><a href="#paso-4-construcción-de-wf-receta-modelo-wf" id="toc-paso-4-construcción-de-wf-receta-modelo-wf" class="nav-link" data-scroll-target="#paso-4-construcción-de-wf-receta-modelo-wf">Paso 4: Construcción de WF: Receta + Modelo + WF</a></li>
+  <li><a href="#paso-5-entrenamos-el-modelo-con-cv-y-analizamos-rendimiento" id="toc-paso-5-entrenamos-el-modelo-con-cv-y-analizamos-rendimiento" class="nav-link" data-scroll-target="#paso-5-entrenamos-el-modelo-con-cv-y-analizamos-rendimiento">Paso 5: Entrenamos el modelo con CV y analizamos rendimiento</a></li>
+  <li><a href="#paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit" id="toc-paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit" class="nav-link" data-scroll-target="#paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit">Paso 6: Fiteamos y evaluamos con todo el entrenamiento con last_fit()</a></li>
+  </ul></li>
+  <li><a href="#extra-interpretabilidad-de-la-regresión-logística" id="toc-extra-interpretabilidad-de-la-regresión-logística" class="nav-link" data-scroll-target="#extra-interpretabilidad-de-la-regresión-logística"><span class="header-section-number">7.3</span> Extra: Interpretabilidad de la regresión logística</a></li>
+  <li><a href="#comparación-entre-rl-y-rf" id="toc-comparación-entre-rl-y-rf" class="nav-link" data-scroll-target="#comparación-entre-rl-y-rf"><span class="header-section-number">7.4</span> Comparación entre RL Y RF</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./C4_RL.html">Métodos supervisados</a></li><li class="breadcrumb-item"><a href="./C7_log.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regresión logística</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regresión logística</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="antecedentes" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="antecedentes"><span class="header-section-number">7.1</span> Antecedentes</h2>
+<p>La regresión logística es un modelo estadístico utilizado para predecir la probabilidad de que ocurra un evento binario (por ejemplo, éxito/fracaso, sí/no, 1/0) en función de una o más variables explicativas. A diferencia de la regresión lineal, que modela una variable continua, la regresión logística modela la probabilidad de pertenecer a una de las dos categorías posibles del resultado.</p>
+<p>La <strong>regresión logística</strong> es un modelo estadístico utilizado para predecir la <strong>probabilidad</strong> de que ocurra un evento binario (por ejemplo, <em>éxito/fracaso</em>, <em>sí/no</em>, <em>1/0</em>) en función de una o más variables explicativas.<br>
+A diferencia de la regresión lineal, que modela una variable continua, la regresión logística modela una <strong>probabilidad</strong> y utiliza una transformación llamada <strong>función logit</strong>.</p>
+<p>La función logit se define como el logaritmo del cociente entre la probabilidad de éxito y la probabilidad de fracaso:</p>
+<p><span class="math display">\[
+\text{logit}(p) = \ln\left(\frac{p}{1 - p}\right)
+\]</span></p>
+<p>El modelo logístico general se expresa como:</p>
+<p><span class="math display">\[
+\text{logit}(p) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k
+\]</span></p>
+<p>donde:</p>
+<ul>
+<li><span class="math inline">\(p\)</span> es la probabilidad de que ocurra el evento de interés (por ejemplo, que ( Y = 1 ));</li>
+<li><span class="math inline">\(\beta_0\)</span> es el intercepto;</li>
+<li><span class="math inline">\(\beta_1\)</span>, <span class="math inline">\(\beta_2\)</span>, … son los coeficientes asociados a las variables independientes <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>, <span class="math inline">\(\dots\)</span>, <span class="math inline">\(X_k\)</span>.</li>
+</ul>
+<p>A partir de esta relación, la probabilidad puede obtenerse despejando <span class="math inline">\(p\)</span>:</p>
+<p><span class="math display">\[
+p = \frac{e^{\beta_0 + \beta_1 X_1 + \dots + \beta_k X_k}}{1 + e^{\beta_0 + \beta_1 X_1 + \dots + \beta_k X_k}}
+\]</span></p>
+<p>Esta <strong>función logística</strong> garantiza que los valores estimados de <span class="math inline">\(p\)</span> estén siempre entre 0 y 1, lo cual la hace apropiada para modelar probabilidades.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Recuerda que cada coeficiente <span class="math inline">\(\beta_i\)</span> representa el cambio en el logaritmo de las <em>odds</em> (razón de probabilidades) asociado a un incremento de una unidad en la variable <span class="math inline">\(X_i\)</span>, manteniendo las demás constantes.</p>
+</div>
+</div>
+</section>
+<section id="proceso" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="proceso"><span class="header-section-number">7.2</span> Proceso</h2>
+<p>En este caso vamos a utilizar la data “Predict Students’ Dropout and Academic Success”, la cual pueden encontrar en <a href="https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success">esta página web</a> de UCI Machine Learning Datasets.</p>
+<p>Para fines de esta clase, he preparado un subset de esta data original, haciendo algunas ediciones.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Nombre</th>
+<th>Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Estado civil</td>
+<td><code>marital_status</code></td>
+<td>1 – single · 2 – married · 3 – widower · 4 – divorced · 5 – facto union · 6 – legally separated</td>
+</tr>
+<tr class="even">
+<td>Turno</td>
+<td><code>day_or_night</code></td>
+<td>Factor (Sí – No)</td>
+</tr>
+<tr class="odd">
+<td>Calificación previa a ingresar</td>
+<td><code>previous_qualification</code></td>
+<td>Continua (entre 0 a 200)</td>
+</tr>
+<tr class="even">
+<td>Nota de admisión</td>
+<td><code>admission_grade</code></td>
+<td>Continua (entre 0 a 200)</td>
+</tr>
+<tr class="odd">
+<td>Desplazado</td>
+<td><code>displaced</code></td>
+<td>Factor (Sí – No)</td>
+</tr>
+<tr class="even">
+<td>Género</td>
+<td><code>gender</code></td>
+<td>Factor (Hombre – Mujer)</td>
+</tr>
+<tr class="odd">
+<td>Edad</td>
+<td><code>age</code></td>
+<td>Edad del estudiante al matricularse</td>
+</tr>
+<tr class="even">
+<td>Internacional</td>
+<td><code>international</code></td>
+<td>Factor (Sí – No)</td>
+</tr>
+<tr class="odd">
+<td>Estado (variable objetivo)</td>
+<td><code>target</code></td>
+<td>Factor (<code>Dropout</code> – <code>Graduate</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>La data la pueden encontrar en el PAIDEIA.</p>
+<section id="paso-1-apertura-de-dataset" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="paso-1-apertura-de-dataset">Paso 1: Apertura de dataset</h3>
+<p>Abrimos nuestra base de datos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rio)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">import</span>(<span class="st">"data/dropout2.csv"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A continuación, convertimos las variables categóricas a factores para que R las reconozca correctamente. Esto es esencial para el análisis y modelado posterior.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>marital_status <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>marital_status)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>day_or_night <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>day_or_night)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>displaced <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>displaced)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>gender)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>international <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>international)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="paso-2-eda" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="paso-2-eda">Paso 2: EDA</h3>
+<p>Siempre realiza tu análisis exploratorio de datos antes de iniciar el flujo de machine learning. Realizamos una exploración visual de los datos para identificar patrones y diferencias entre grupos según la variable objetivo (target).</p>
+<p>Primero, comparamos la distribución de edad según el estado del estudiante:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">y=</span> age, <span class="at">color=</span>target) <span class="sc">+</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>target)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C7_log_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ahora, hacemos lo mismo para la variable admission_grade:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">y=</span> admission_grade, <span class="at">color=</span>target) <span class="sc">+</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>target)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C7_log_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Qué buscamos? Separabilidad entre clases:</p>
+<p>Buscamos que las distribuciones de las variables numéricas sean diferentes entre las categorías de la variable objetivo (target). Si los boxplots se superponen completamente (son muy parecidos), esa variable probablemente no será útil para discriminar entre clases. Si están bien separados, es una señal de que la variable tiene poder predictivo.</p>
+</div>
+</div>
+<p>También podemos realizar una tabla resumen usando el paquete <code>gtsummary</code>. Mientras que los boxplots solo muestran variables numéricas de forma individual, tbl_summary() genera una tabla que incluye todas las variables del dataset (numéricas y categóricas) en un solo lugar, estratificadas por la variable objetivo.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_gtsummary_language</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">language =</span> <span class="st">"es"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">decimal.mark =</span> <span class="st">"."</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> target,  <span class="co"># Va a utilizar mi target como columnas</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">include =</span> <span class="fu">everything</span>(),<span class="co"># Incluye todas las variables</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">statistic =</span> <span class="fu">list</span>(<span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{mean} ({sd})"</span>)) </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="gcxdvtqbwb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gcxdvtqbwb table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#gcxdvtqbwb thead, #gcxdvtqbwb tbody, #gcxdvtqbwb tfoot, #gcxdvtqbwb tr, #gcxdvtqbwb td, #gcxdvtqbwb th {
+  border-style: none;
+}
+
+#gcxdvtqbwb p {
+  margin: 0;
+  padding: 0;
+}
+
+#gcxdvtqbwb .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#gcxdvtqbwb .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#gcxdvtqbwb .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#gcxdvtqbwb .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#gcxdvtqbwb .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#gcxdvtqbwb .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#gcxdvtqbwb .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#gcxdvtqbwb .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#gcxdvtqbwb .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#gcxdvtqbwb .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#gcxdvtqbwb .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#gcxdvtqbwb .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#gcxdvtqbwb .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#gcxdvtqbwb .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#gcxdvtqbwb .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gcxdvtqbwb .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#gcxdvtqbwb .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#gcxdvtqbwb .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#gcxdvtqbwb .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gcxdvtqbwb .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#gcxdvtqbwb .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gcxdvtqbwb .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#gcxdvtqbwb .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gcxdvtqbwb .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gcxdvtqbwb .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gcxdvtqbwb .gt_left {
+  text-align: left;
+}
+
+#gcxdvtqbwb .gt_center {
+  text-align: center;
+}
+
+#gcxdvtqbwb .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#gcxdvtqbwb .gt_font_normal {
+  font-weight: normal;
+}
+
+#gcxdvtqbwb .gt_font_bold {
+  font-weight: bold;
+}
+
+#gcxdvtqbwb .gt_font_italic {
+  font-style: italic;
+}
+
+#gcxdvtqbwb .gt_super {
+  font-size: 65%;
+}
+
+#gcxdvtqbwb .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#gcxdvtqbwb .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#gcxdvtqbwb .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#gcxdvtqbwb .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#gcxdvtqbwb .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#gcxdvtqbwb .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#gcxdvtqbwb .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#gcxdvtqbwb .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#gcxdvtqbwb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="gt_col_headings header">
+<th id="label" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Característica</strong></th>
+<th id="stat_1" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Dropout</strong><br>
+N = 1,421<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></th>
+<th id="stat_2" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Graduate</strong><br>
+N = 2,209<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">marital_status</td>
+<td class="gt_row gt_center" headers="stat_1"><br>
+</td>
+<td class="gt_row gt_center" headers="stat_2"><br>
+</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;casado</td>
+<td class="gt_row gt_center" headers="stat_1">179 (13%)</td>
+<td class="gt_row gt_center" headers="stat_2">148 (6.7%)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;divorciado</td>
+<td class="gt_row gt_center" headers="stat_1">42 (3.0%)</td>
+<td class="gt_row gt_center" headers="stat_2">33 (1.5%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;separado</td>
+<td class="gt_row gt_center" headers="stat_1">4 (0.3%)</td>
+<td class="gt_row gt_center" headers="stat_2">1 (&lt;0.1%)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;soltero</td>
+<td class="gt_row gt_center" headers="stat_1">1,184 (83%)</td>
+<td class="gt_row gt_center" headers="stat_2">2,015 (91%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;union_facto</td>
+<td class="gt_row gt_center" headers="stat_1">11 (0.8%)</td>
+<td class="gt_row gt_center" headers="stat_2">11 (0.5%)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;viudo</td>
+<td class="gt_row gt_center" headers="stat_1">1 (&lt;0.1%)</td>
+<td class="gt_row gt_center" headers="stat_2">1 (&lt;0.1%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">day_or_night</td>
+<td class="gt_row gt_center" headers="stat_1"><br>
+</td>
+<td class="gt_row gt_center" headers="stat_2"><br>
+</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;No</td>
+<td class="gt_row gt_center" headers="stat_1">207 (15%)</td>
+<td class="gt_row gt_center" headers="stat_2">201 (9.1%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Si</td>
+<td class="gt_row gt_center" headers="stat_1">1,214 (85%)</td>
+<td class="gt_row gt_center" headers="stat_2">2,008 (91%)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">previous_qualification</td>
+<td class="gt_row gt_center" headers="stat_1">131 (13)</td>
+<td class="gt_row gt_center" headers="stat_2">134 (13)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">admission_grade</td>
+<td class="gt_row gt_center" headers="stat_1">125 (15)</td>
+<td class="gt_row gt_center" headers="stat_2">129 (14)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">displaced</td>
+<td class="gt_row gt_center" headers="stat_1"><br>
+</td>
+<td class="gt_row gt_center" headers="stat_2"><br>
+</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;No</td>
+<td class="gt_row gt_center" headers="stat_1">752 (53%)</td>
+<td class="gt_row gt_center" headers="stat_2">885 (40%)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Si</td>
+<td class="gt_row gt_center" headers="stat_1">669 (47%)</td>
+<td class="gt_row gt_center" headers="stat_2">1,324 (60%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">gender</td>
+<td class="gt_row gt_center" headers="stat_1"><br>
+</td>
+<td class="gt_row gt_center" headers="stat_2"><br>
+</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Hombre</td>
+<td class="gt_row gt_center" headers="stat_1">701 (49%)</td>
+<td class="gt_row gt_center" headers="stat_2">548 (25%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Mujer</td>
+<td class="gt_row gt_center" headers="stat_1">720 (51%)</td>
+<td class="gt_row gt_center" headers="stat_2">1,661 (75%)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">age</td>
+<td class="gt_row gt_center" headers="stat_1">26 (9)</td>
+<td class="gt_row gt_center" headers="stat_2">22 (7)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">international</td>
+<td class="gt_row gt_center" headers="stat_1"><br>
+</td>
+<td class="gt_row gt_center" headers="stat_2"><br>
+</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;No</td>
+<td class="gt_row gt_center" headers="stat_1">1,389 (98%)</td>
+<td class="gt_row gt_center" headers="stat_2">2,155 (98%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;Si</td>
+<td class="gt_row gt_center" headers="stat_1">32 (2.3%)</td>
+<td class="gt_row gt_center" headers="stat_2">54 (2.4%)</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_footnotes odd">
+<td colspan="3" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> n (%); Media (DE)</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="paso-3-split-de-la-data" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="paso-3-split-de-la-data">Paso 3: Split de la data</h3>
+<p>Al igual que en las clases pasadas, dividimos los datos en conjuntos de entrenamiento y prueba (75%-25% por defecto). Esto nos permite evaluar el modelo en datos que no ha visto durante el entrenamiento, lo cual es fundamental para medir su capacidad de generalización.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(data)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>testing_data <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Creamos 5 folds para validación cruzada en los datos de entrenamiento. La validación cruzada nos ayuda a obtener una estimación más robusta del rendimiento del modelo.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(training_data, <span class="at">v=</span> <span class="dv">5</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>folds</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#  5-fold cross-validation 
+# A tibble: 5 × 2
+  splits             id   
+  &lt;list&gt;             &lt;chr&gt;
+1 &lt;split [2177/545]&gt; Fold1
+2 &lt;split [2177/545]&gt; Fold2
+3 &lt;split [2178/544]&gt; Fold3
+4 &lt;split [2178/544]&gt; Fold4
+5 &lt;split [2178/544]&gt; Fold5</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Recuerda que la validación cruzada es un paso intermedio crucial antes del entrenamiento final.</p>
+<p>Si entrenamos directamente con todos los datos de entrenamiento y evaluamos solo en el conjunto de prueba, obtenemos una única estimación del rendimiento. Con CV obtenemos múltiples estimaciones (5 en tu caso), lo que nos da:</p>
+<ul>
+<li><p>Un promedio más confiable del rendimiento real del modelo: Ese promedio va a ser un indicador más robusto que te puede guiar antes de dar el paso final de evaluar en el testing data.</p></li>
+<li><p>Una medida de la variabilidad: ¿el modelo es consistente o su rendimiento fluctúa mucho?</p></li>
+<li><p>Preservar la integridad del conjunto de prueba: El conjunto de prueba debe permanecer completamente intocado hasta el final. Es tu “juez final” que simula datos nuevos que el modelo nunca ha visto. Si lo usas durante el desarrollo, pierdes esta garantía.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="paso-4-construcción-de-wf-receta-modelo-wf" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="paso-4-construcción-de-wf-receta-modelo-wf">Paso 4: Construcción de WF: Receta + Modelo + WF</h3>
+<p>Definimos los tres componentes principales para nuestro proceso de machine learning: la receta, el modelo a utilizar y en el ensamble en un workflow()</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>lr_receta <span class="ot">&lt;-</span> <span class="fu">recipe</span>(target<span class="sc">~</span>age, <span class="at">data=</span>training_data)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>lr_modelo <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>              <span class="fu">set_engine</span>(<span class="st">"glm"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>              <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>lr_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>          <span class="fu">add_model</span>(lr_modelo) <span class="sc">|&gt;</span> </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>          <span class="fu">add_recipe</span>(lr_receta)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="paso-5-entrenamos-el-modelo-con-cv-y-analizamos-rendimiento" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="paso-5-entrenamos-el-modelo-con-cv-y-analizamos-rendimiento">Paso 5: Entrenamos el modelo con CV y analizamos rendimiento</h3>
+<p>Entrenamos el modelo utilizando validación cruzada con los 5 folds definidos anteriormente. Evaluamos múltiples métricas (accuracy, specificity, sensitivity y roc_auc) para tener una visión completa del rendimiento.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos un listado de métricas que solicitaremos</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>mis_metricas <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy, specificity, sensitivity, roc_auc)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizamos un entrenamiento con remuestreo utilizando los folds creados</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>lr_fit_cv<span class="ot">&lt;-</span>lr_wf <span class="sc">|&gt;</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>          <span class="fu">fit_resamples</span>(<span class="at">resamples =</span> folds, <span class="co">#Nuestros folds!</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">metrics =</span> mis_metricas,  <span class="co"># Nuestras métricas!</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">control =</span> <span class="fu">control_resamples</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                                                    <span class="at">verbose =</span> <span class="cn">TRUE</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold1: preprocessor 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold1: preprocessor 1/1, model 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold1: preprocessor 1/1, model 1/1 (predictions)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold2: preprocessor 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold2: preprocessor 1/1, model 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold2: preprocessor 1/1, model 1/1 (predictions)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold3: preprocessor 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold3: preprocessor 1/1, model 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold3: preprocessor 1/1, model 1/1 (predictions)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold4: preprocessor 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold4: preprocessor 1/1, model 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold4: preprocessor 1/1, model 1/1 (predictions)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold5: preprocessor 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold5: preprocessor 1/1, model 1/1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Fold5: preprocessor 1/1, model 1/1 (predictions)</code></pre>
+</div>
+</div>
+<p>Primero revisamos las métricas para cada fold individualmente, lo que nos permite identificar la variabilidad en el rendimiento:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(lr_fit_cv,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">summarize =</span> <span class="cn">FALSE</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 5
+   id    .metric     .estimator .estimate .config        
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
+ 1 Fold1 accuracy    binary         0.639 pre0_mod0_post0
+ 2 Fold1 specificity binary         0.905 pre0_mod0_post0
+ 3 Fold1 sensitivity binary         0.242 pre0_mod0_post0
+ 4 Fold1 roc_auc     binary         0.658 pre0_mod0_post0
+ 5 Fold2 accuracy    binary         0.644 pre0_mod0_post0
+ 6 Fold2 specificity binary         0.879 pre0_mod0_post0
+ 7 Fold2 sensitivity binary         0.261 pre0_mod0_post0
+ 8 Fold2 roc_auc     binary         0.684 pre0_mod0_post0
+ 9 Fold3 accuracy    binary         0.643 pre0_mod0_post0
+10 Fold3 specificity binary         0.896 pre0_mod0_post0
+11 Fold3 sensitivity binary         0.263 pre0_mod0_post0
+12 Fold3 roc_auc     binary         0.673 pre0_mod0_post0
+13 Fold4 accuracy    binary         0.621 pre0_mod0_post0
+14 Fold4 specificity binary         0.877 pre0_mod0_post0
+15 Fold4 sensitivity binary         0.264 pre0_mod0_post0
+16 Fold4 roc_auc     binary         0.694 pre0_mod0_post0
+17 Fold5 accuracy    binary         0.662 pre0_mod0_post0
+18 Fold5 specificity binary         0.888 pre0_mod0_post0
+19 Fold5 sensitivity binary         0.313 pre0_mod0_post0
+20 Fold5 roc_auc     binary         0.693 pre0_mod0_post0</code></pre>
+</div>
+</div>
+<p>Luego obtenemos el promedio de las métricas a través de todos los folds:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(lr_fit_cv)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 6
+  .metric     .estimator  mean     n std_err .config        
+  &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    binary     0.642     5 0.00647 pre0_mod0_post0
+2 roc_auc     binary     0.680     5 0.00676 pre0_mod0_post0
+3 sensitivity binary     0.269     5 0.0118  pre0_mod0_post0
+4 specificity binary     0.889     5 0.00527 pre0_mod0_post0</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En la evaluación de modelos de clasificación, especialmente en regresión logística, se utilizan diversas métricas derivadas de la matriz de confusión para medir su desempeño.</p>
+<p>Accuracy (Exactitud): Mide la proporción total de predicciones correctas sobre el total de observaciones. Es útil cuando las clases están balanceadas.</p>
+<p>Sensitivity (Sensibilidad o Recall): Indica la capacidad del modelo para detectar correctamente los casos positivos reales. Es prioritaria cuando es más costoso no detectar un positivo (por ejemplo, en detección de fraude o enfermedad).</p>
+<p>Specificity (Especificidad) Mide la capacidad del modelo para identificar correctamente los negativos reales. Es especialmente importante cuando un falso positivo genera consecuencias indeseadas o costosas. Por ejemplo, en un sistema de detección de lavado de activos, una baja especificidad haría que muchas operaciones legítimas sean marcadas como sospechosas, generando sobrecarga en los analistas y pérdida de confianza en el sistema.</p>
+</div>
+</div>
+</section>
+<section id="paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="paso-6-fiteamos-y-evaluamos-con-todo-el-entrenamiento-con-last_fit">Paso 6: Fiteamos y evaluamos con todo el entrenamiento con last_fit()</h3>
+<p>Entrenamos el modelo final usando todos los datos de entrenamiento y lo evaluamos en el conjunto de prueba.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico_final <span class="ot">&lt;-</span> lr_wf <span class="sc">|&gt;</span> <span class="fu">last_fit</span>(split, <span class="at">metrics =</span> mis_metricas)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Una vez entrenado el modelo final podemos recolectar las predicciones que ha realizado (sobre nuestra data de test, es decir, la data nueva):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_predictions</span>(modelo_logistico_final)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 908 × 7
+   .pred_class .pred_Dropout .pred_Graduate id              target  .row .config
+   &lt;fct&gt;               &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;           &lt;fct&gt;  &lt;int&gt; &lt;chr&gt;  
+ 1 Dropout             0.804          0.196 train/test spl… Gradu…     6 pre0_m…
+ 2 Graduate            0.372          0.628 train/test spl… Dropo…     8 pre0_m…
+ 3 Graduate            0.310          0.690 train/test spl… Dropo…    10 pre0_m…
+ 4 Graduate            0.356          0.644 train/test spl… Gradu…    14 pre0_m…
+ 5 Graduate            0.310          0.690 train/test spl… Gradu…    15 pre0_m…
+ 6 Graduate            0.310          0.690 train/test spl… Gradu…    17 pre0_m…
+ 7 Graduate            0.325          0.675 train/test spl… Gradu…    22 pre0_m…
+ 8 Graduate            0.325          0.675 train/test spl… Gradu…    26 pre0_m…
+ 9 Dropout             0.716          0.284 train/test spl… Dropo…    29 pre0_m…
+10 Graduate            0.356          0.644 train/test spl… Gradu…    40 pre0_m…
+# ℹ 898 more rows</code></pre>
+</div>
+</div>
+<p>Mira que para cada uno de los casos u observaciones de nuestra data de testo nos brinda:</p>
+<ul>
+<li><p>La clase predicha.</p></li>
+<li><p>La probabilidad que sea la clase/evento analizado (Dropout)</p></li>
+<li><p>La probabilidad que no sea la clase/evento analizado (Graduate).</p></li>
+</ul>
+<p>Asimismo, podemos recolectar las métricas:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(modelo_logistico_final)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  .metric     .estimator .estimate .config        
+  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    binary         0.673 pre0_mod0_post0
+2 specificity binary         0.905 pre0_mod0_post0
+3 sensitivity binary         0.279 pre0_mod0_post0
+4 roc_auc     binary         0.694 pre0_mod0_post0</code></pre>
+</div>
+</div>
+<p>La matriz de confusión nos muestra el desempeño detallado del modelo en términos de clasificaciones correctas e incorrectas.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_predictions</span>(modelo_logistico_final) <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth=</span>target, </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimate=</span>.pred_class) <span class="sc">|&gt;</span> </span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(<span class="at">type =</span> <span class="st">"heatmap"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="C7_log_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>EJERCICIO: Prueba calculando las métricas (accuracy, specificity, sensitivity) manualmente usando la matriz de confusión!</p>
+</section>
+</section>
+<section id="extra-interpretabilidad-de-la-regresión-logística" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="extra-interpretabilidad-de-la-regresión-logística"><span class="header-section-number">7.3</span> Extra: Interpretabilidad de la regresión logística</h2>
+<p>La regresión logística destaca por su alta interpretabilidad comparada con otros algoritmos de machine learning. A diferencia de modelos de “caja negra” como redes neuronales, random forests u otros como los gradient boosting, la regresión logística nos permite entender exactamente cómo y cuánto cada variable influye en la predicción a través de sus coeficientes. Los odds ratios (coeficientes exponenciados) tienen una interpretación directa y significativa: nos dicen cuántas veces aumentan o disminuyen las probabilidades del evento cuando cambia una variable predictora.</p>
+<p>Por ejemplo, podemos decir con precisión: “este estudiante tiene 3.5 veces más probabilidad de desertar debido a X característica”.</p>
+<p>Para nuestro ejercicio, podemos extraer los coeficientes del modelo para interpretar la relación entre las variables predictoras y la variable objetivo.</p>
+<p>Primero, vemos los coeficientes en escala logarítmica:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico_final<span class="sc">$</span>.workflow[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)   2.04     0.135        15.1 8.45e-52
+2 age          -0.0691   0.00551     -12.5 4.04e-36</code></pre>
+</div>
+</div>
+<p>Luego, calculamos los coeficientes exponenciados (odds ratios), que son más fáciles de interpretar.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico_final<span class="sc">$</span>.workflow[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">exponentiate =</span><span class="cn">TRUE</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)    7.72    0.135        15.1 8.45e-52
+2 age            0.933   0.00551     -12.5 4.04e-36</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Intercepto ((Intercept) = 7.72)</p>
+<p>Esto representa el odds (razón de probabilidades) de que el evento ocurra (Dropout) cuando todas las variables predictoras valen 0. En este caso, el modelo predice que las probabilidades de graduarse son 7.72 veces mayores que las de no graduarse cuando la edad es 0 (lo cual, claro, no es interpretable literalmente, pero sirve como punto de referencia matemático).</p>
+<p>Edad (<code>age</code> = 0.933)</p>
+<p>Es el cambio en las <em>odds</em> del evento por <strong>cada año adicional</strong>.</p>
+<ul>
+<li><p>OR = 0.933 ⇒ por cada +1 año, las <em>odds</em> *disminuyen 6.7%**: (1 - 0.933 = 0.067).<br>
+</p></li>
+<li><p>Ahora bien, podría ser más intuitivo expresar el efecto en la dirección opuesta.</p></li>
+</ul>
+<p>La inversa de 0.933 es 1 / 0.933 = 1.07.<br>
+Esto significa que <strong>una disminución de un año en la edad</strong> aumenta las <em>odds</em> del evento en <strong>7%,</strong> o, equivalentemente, que las <em>odds</em> se <strong>multiplican por 1.07</strong>..</p>
+</div>
+</div>
+</section>
+<section id="comparación-entre-rl-y-rf" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="comparación-entre-rl-y-rf"><span class="header-section-number">7.4</span> Comparación entre RL Y RF</h2>
+<p>Compara el rendimiento entre la regresión logística con el Random Forest. ¿Con qué algoritmo lograrías una mejor performance predictiva?</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./C6_arboles.html" class="pagination-link" aria-label="Árboles de decisión y Random Forest">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Árboles de decisión y Random Forest</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -2,14 +2,13 @@
 
 ## Punto de partida
 
-Habíamos establecido en la clase anterior que queríamos utilizar nuestra data para construir buenos modelos predictivos y para eso utilizamos la regresión lineal. 
+Habíamos establecido en la clase anterior que queríamos utilizar nuestra data para construir buenos modelos predictivos y para eso utilizamos la regresión lineal.
 
 $$
 y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_ix_i
 $$
 
-También, acuérdate que utilizamos una **función de costo** principalmente para evaluar la predicción, la cual era el RMSE (raíz del error cuadrático medio): 
-
+También, acuérdate que utilizamos una **función de costo** principalmente para evaluar la predicción, la cual era el RMSE (raíz del error cuadrático medio):
 
 $$
 J(\beta) \;=\; \sqrt{\frac{1}{n}\sum_{i=1}^{n}\big(y_i - \hat{y}_i\big)^2}
@@ -19,12 +18,11 @@ Asimismo, lo que hicimos en el ejercicio fue construir modelos con Corrupción (
 
 Vamos a expandir nuestor uso de tidymodels.
 
-
 ## Preprocesamiento con recipe
 
 ![](images/recipes.png)
 
-Como vimos en la clase pasada, con recipe no solo definimos la variable objetivo y los predictores; también podemos encadenar, de forma ordenada y reproducible, los pasos de preprocesamiento que aplicaremos al conjunto de datos (imputación, codificación, escalado, etc.). 
+Como vimos en la clase pasada, con recipe no solo definimos la variable objetivo y los predictores; también podemos encadenar, de forma ordenada y reproducible, los pasos de preprocesamiento que aplicaremos al conjunto de datos (imputación, codificación, escalado, etc.).
 
 Vamos a revisar los más recurrente.
 
@@ -45,12 +43,13 @@ data<- data |>
         filter(!is.na(aml_index))
 ```
 
-Imagina que ahora deseo utilizar  *rule_of_law* como un predictor pero me doy cuenta que tiene valores perdidos. 
+Imagina que ahora deseo utilizar *rule_of_law* como un predictor pero me doy cuenta que tiene valores perdidos.
 
 ```{r}
 summary(data$rule_of_law)
 ```
-Antes ya habíamos identificado que efectivamente es posible **imputar** debido a que el número de perdido no es significativo. 
+
+Antes ya habíamos identificado que efectivamente es posible **imputar** debido a que el número de perdido no es significativo.
 
 ```{r}
 library(naniar)
@@ -62,7 +61,7 @@ data |>
 La **imputación de datos perdidos** es el proceso de reemplazar valores faltantes (NA) por valores plausibles para poder analizar y modelar sin descartar observaciones. Busca preservar el tamaño muestral, reducir sesgos y permitir que los algoritmos funcionen (muchos no aceptan NA).
 :::
 
-La imputación debe aplicarse siempre, **SIEMPRE**, sobre la data de entrenamiento. 
+La imputación debe aplicarse siempre, **SIEMPRE**, sobre la data de entrenamiento.
 
 ```{r}
 set.seed(2025)
@@ -78,12 +77,11 @@ mi_receta <- recipe(aml_index ~ rule_of_law, data = training_data) |>
               step_impute_mean(rule_of_law)
 ```
 
-
 ¿Qué es lo que está haciendo esta función? **step_impute_mean()** imputa los valores faltantes de variables numéricas con la media calculada en el conjunto de entrenamiento. Es decir, con este paso, nos va a permitir utilizar TODOS LOS CASOS, los cual al inicio tenía perdidos. Este es uno de los métodos de imputación más simples.
 
-Ahora bien, antes de seguir, si quieres ver qué hace este step a nuestra data, podemos inspeccionarlo **preparando** la receta solo con el conjunto de entrenamiento (ahí la receta “aprende” parámetros como las medias) y luego mirar el entrenamiento ya transformado con juice() y el conjunto de prueba **horneado** con bake(). 
+Ahora bien, antes de seguir, si quieres ver qué hace este step a nuestra data, podemos inspeccionarlo **preparando** la receta solo con el conjunto de entrenamiento (ahí la receta “aprende” parámetros como las medias) y luego mirar el entrenamiento ya transformado con juice() y el conjunto de prueba **horneado** con bake().
 
-En la jerga de tidymodels, hornear significa aplicar a datos nuevos (p. ej., el test) exactamente las mismas transformaciones que se estimaron con el train —imputar con las medias del train, escalar con sus desvíos, crear las mismas dummies, etc.— sin recalcular nada y sin modificar tu objeto original; bake() simplemente devuelve un tibble ya transformado, listo para predecir. 
+En la jerga de tidymodels, hornear significa aplicar a datos nuevos (p. ej., el test) exactamente las mismas transformaciones que se estimaron con el train —imputar con las medias del train, escalar con sus desvíos, crear las mismas dummies, etc.— sin recalcular nada y sin modificar tu objeto original; bake() simplemente devuelve un tibble ya transformado, listo para predecir.
 
 Esto aplica tanto en nuestro training data:
 
@@ -100,9 +98,7 @@ mi_receta |>
      juice()   # devuelve el train ya transformado según lo aprendido en prep
 ```
 
-
 Como en nuestro testing data, que antes se veía así:
-
 
 ```{r}
 testing_data |> 
@@ -117,35 +113,33 @@ mi_receta |>
       bake(new_data=testing_data) # devuelve el test ya transformado según lo aprendido en prep
 ```
 
-
 ### step_normalize(): Normalizar variables
 
 **Definición**
 
-Estandariza variables numéricas mediante z-score: a cada columna seleccionada le resta su media y la divide por su desviación estándar. 
+Estandariza variables numéricas mediante z-score: a cada columna seleccionada le resta su media y la divide por su desviación estándar.
 
 ![](images/zscore.jpeg)
 
 Cuándo usarlo:
 
-- Modelos sensibles a la escala o basados en distancia: k-NN, SVM, regresiones penalizadas (glmnet: Lasso/Ridge/Elastic Net), redes neuronales.
+-   Modelos sensibles a la escala o basados en distancia: k-NN, SVM, regresiones penalizadas (glmnet: Lasso/Ridge/Elastic Net), redes neuronales.
 
-- No es necesario para árboles, random forest o boosting basados en árboles.
+-   No es necesario para árboles, random forest o boosting basados en árboles.
 
-Recuerda que debes hacer esto a las variables numéricas. 
+Recuerda que debes hacer esto a las variables numéricas.
 
 Después de normalizar verás:
 
-- Los números cambian de escala: cada predictor numérico queda con media ≈ 0 y desviación estándar ≈ 1. Verás muchos valores negativos (por debajo del promedio) y positivos (por encima).
+-   Los números cambian de escala: cada predictor numérico queda con media ≈ 0 y desviación estándar ≈ 1. Verás muchos valores negativos (por debajo del promedio) y positivos (por encima).
 
-- Las unidades desaparecen: ya no están en soles, años o %; ahora todos están en “desviaciones estándar”, por eso son comparables entre sí.
+-   Las unidades desaparecen: ya no están en soles, años o %; ahora todos están en “desviaciones estándar”, por eso son comparables entre sí.
 
-- Las formas no se rompen: el orden de los casos no cambia y las correlaciones entre variables se conservan; solo cambia la escala.
+-   Las formas no se rompen: el orden de los casos no cambia y las correlaciones entre variables se conservan; solo cambia la escala.
 
-- En tablas/gráficos: histogramas centrados en 0; resúmenes tipo mean ~ 0 y sd ~ 1. Si haces scatterplots, la nube luce igual, pero con ejes reescalados.
+-   En tablas/gráficos: histogramas centrados en 0; resúmenes tipo mean \~ 0 y sd \~ 1. Si haces scatterplots, la nube luce igual, pero con ejes reescalados.
 
-- En el modelo: algoritmos sensibles a escala (k-NN, SVM, Lasso/Ridge/Elastic Net, PCA, k-means) se vuelven más estables y los coeficientes en modelos lineales son más comparables en magnitud.
-
+-   En el modelo: algoritmos sensibles a escala (k-NN, SVM, Lasso/Ridge/Elastic Net, PCA, k-means) se vuelven más estables y los coeficientes en modelos lineales son más comparables en magnitud.
 
 **Ejemplo simple**
 
@@ -172,13 +166,14 @@ Entonces, ahora la escala cambia y son comparables:
 ```{r}
 summary(df2$edad_normalizado)
 ```
+
 ```{r}
 summary(df2$sueldo_normalizado)
 ```
 
 **Aplicación con tidymodels**
 
-Esto que hemos hecho manualmente, también lo podemos hacer con tidymodels y la función step_normalize(). Piensa en las variables rule_of_law y cpi_index. 
+Esto que hemos hecho manualmente, también lo podemos hacer con tidymodels y la función step_normalize(). Piensa en las variables rule_of_law y cpi_index.
 
 ```{r}
 mi_receta <- recipe(aml_index ~ rule_of_law + pbi_pc, data = training_data) |> 
@@ -202,12 +197,11 @@ mi_receta |>
       bake(new_data=testing_data) # devuelve el test ya transformado según lo aprendido en prep
 ```
 
-
 ### step_dummy(): Predictoras categóricas
 
 **Definición**
 
-Para usar variables categóricas en muchos algoritmos de aprendizaje (por ejemplo, regresiones penalizadas como glmnet, SVM, redes, XGBoost), primero hay que convertirlas a variables numéricas. La forma estándar es el one-hot encoding: cada categoría de una variable se transforma en una columna binaria que vale 1 si el registro pertenece a esa categoría y 0 si no. 
+Para usar variables categóricas en muchos algoritmos de aprendizaje (por ejemplo, regresiones penalizadas como glmnet, SVM, redes, XGBoost), primero hay que convertirlas a variables numéricas. La forma estándar es el one-hot encoding: cada categoría de una variable se transforma en una columna binaria que vale 1 si el registro pertenece a esa categoría y 0 si no.
 
 ![](images/onehot.png)
 
@@ -233,12 +227,11 @@ df |>
          sector_privado=ifelse(sector=="privado", 1, 0))
 ```
 
-Como ves en este ejemplo, a la derecha hemos creado dos nuevas variables "sector_publico" que coloca un "1" cuando efectivamente el caso pertenece a ese sector y "sector_privado" cuando ocurre lo propio. En caso no se cumpla la condición, existirá un cero. 
-
+Como ves en este ejemplo, a la derecha hemos creado dos nuevas variables "sector_publico" que coloca un "1" cuando efectivamente el caso pertenece a ese sector y "sector_privado" cuando ocurre lo propio. En caso no se cumpla la condición, existirá un cero.
 
 **Aplicación con tidymodels**
 
-Ahora bien, podemos hacer esta transformación de una forma más sencilla utilizando recipes. 
+Ahora bien, podemos hacer esta transformación de una forma más sencilla utilizando recipes.
 
 ```{r}
 mi_receta <- recipe(aml_index ~ rule_of_law + pbi_pc + continente, data = training_data) |> 
@@ -247,14 +240,13 @@ mi_receta <- recipe(aml_index ~ rule_of_law + pbi_pc + continente, data = traini
               step_dummy(continente)
 ```
 
-Ahora vemos cómo se vería nuestra data de entrenamiento. 
+Ahora vemos cómo se vería nuestra data de entrenamiento.
 
 ```{r}
 mi_receta |> 
      prep() |> # es cuando la receta aprende con el train
      juice()
 ```
-
 
 Y nuestra data de testing:
 
@@ -263,7 +255,6 @@ mi_receta |>
       prep() |> # es cuando la receta aprende con el train
       bake(new_data=testing_data) # devuelve el test ya transformado según lo aprendido en prep
 ```
-
 
 ## Regresión lineal con receta
 
@@ -296,7 +287,6 @@ tidy(modelo_entrenado)
 ```
 
 **Qué puedes notar en los coeficientes?**
-
 
 ### Evaluamos el modelo con test
 
@@ -350,26 +340,26 @@ Hasta aquí te había comentado que era necesario separar nuestra data en data d
 
 ![](images/TRAINTEST.png)
 
-Sin embargo, el depender de **un único split** (partición) es un riesgo para nosotros. Si te pones a pensar es como evaluar a un deportista con una sóla carrera. En otras palabras, la "nota" del modelo queda a merced del azar del muestreo. Por eso, se establece que antes de irnos a evaluar al modelo con el testing dataset debe pasar por un proceso de validación. 
+Sin embargo, el depender de **un único split** (partición) es un riesgo para nosotros. Si te pones a pensar es como evaluar a un deportista con una sóla carrera. En otras palabras, la "nota" del modelo queda a merced del azar del muestreo. Por eso, se establece que antes de irnos a evaluar al modelo con el testing dataset debe pasar por un proceso de validación.
 
-Este proceso de validación requeriría hacer un split adicional. Normalmente, en un escenario óptimo, vamos a tener la suficiente cantidad de información para crear una partición más. 
+Este proceso de validación requeriría hacer un split adicional. Normalmente, en un escenario óptimo, vamos a tener la suficiente cantidad de información para crear una partición más.
 
 ![](images/validation.png)
 
-Sin embargo, lo que usualmente ocurre es que no se cuenta con la suficiente cantidad de información. Esto nos deja una salida: usar una técnica que se llama **cross-validation o validación cruzada**.  
+Sin embargo, lo que usualmente ocurre es que no se cuenta con la suficiente cantidad de información. Esto nos deja una salida: usar una técnica que se llama **cross-validation o validación cruzada**.
 
 ![](images/cv.png)
 
 La idea detrás del remuestreo es usar tu muestra disponible como si fuera el universo para simular muchos “nuevos” conjuntos de datos y así estimar con mayor fiabilidad cómo rendiría un modelo o un estimador fuera de esa muestra. En vez de depender de un único corte train/test (muy sensible al azar), divides o vuelves a muestrear tus datos muchas veces, entrenas y evalúas repetidamente, y promedias los resultados.
 
-Primero debemos crear nuestras particiones utilizando nuestro training data. En este caso vamos a comenzar utilizando sólo cuatro particiones o folds. 
+Primero debemos crear nuestras particiones utilizando nuestro training data. En este caso vamos a comenzar utilizando sólo cuatro particiones o folds.
 
 ```{r}
 set.seed(2025)
 folds <- vfold_cv(training_data, v= 4)
 ```
 
-Si entramos a nuestro primer fold, vemos que hemos divido la data de entrenamiento (59) en dos partes. Una primera que fungirá como data para analizar nuestro modelo (aquí para evitar la confusión con el término entrenamiento, se utiliza la palabra **analysis**) y un fold de 15 casos para el **assess**. 
+Si entramos a nuestro primer fold, vemos que hemos divido la data de entrenamiento (59) en dos partes. Una primera que fungirá como data para analizar nuestro modelo (aquí para evitar la confusión con el término entrenamiento, se utiliza la palabra **analysis**) y un fold de 15 casos para el **assess**.
 
 ```{r}
 folds$splits[[1]]
@@ -389,9 +379,7 @@ modelos_entrenados_cv <- flujo_ml %>%
                           fit_resamples(resamples = folds) #DIFERENTE
 ```
 
-
 Ahora, podemos solicitar las métricas para cada uno de los folds creado:
-
 
 ```{r}
 modelos_entrenados_cv |> 
@@ -405,4 +393,4 @@ modelos_entrenados_cv |>
   collect_metrics()
 ```
 
-Este fit_samples se recomienda hacerlo antes del fit con la data de testeo. De tal forma que antes de la evaluación, ya sabes que tu modelo puede funcionar con distintos subdataset creados a partir de tu data de entrenamiento original. 
+Este fit_samples se recomienda hacerlo antes del fit con la data de testeo. De tal forma que antes de la evaluación, ya sabes que tu modelo puede funcionar con distintos subdataset creados a partir de tu data de entrenamiento original.

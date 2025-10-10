@@ -19,6 +19,7 @@ book:
         - C4_RL.qmd
         - C5_RL2.qmd
         - C6_arboles.qmd
+        - C7_log.qmd
     
     - references.qmd
 

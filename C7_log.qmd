@@ -1,0 +1,305 @@
+# Regresión logística
+
+## Antecedentes
+
+La regresión logística es un modelo estadístico utilizado para predecir la probabilidad de que ocurra un evento binario (por ejemplo, éxito/fracaso, sí/no, 1/0) en función de una o más variables explicativas. A diferencia de la regresión lineal, que modela una variable continua, la regresión logística modela la probabilidad de pertenecer a una de las dos categorías posibles del resultado.
+
+La **regresión logística** es un modelo estadístico utilizado para predecir la **probabilidad** de que ocurra un evento binario (por ejemplo, *éxito/fracaso*, *sí/no*, *1/0*) en función de una o más variables explicativas.\
+A diferencia de la regresión lineal, que modela una variable continua, la regresión logística modela una **probabilidad** y utiliza una transformación llamada **función logit**.
+
+La función logit se define como el logaritmo del cociente entre la probabilidad de éxito y la probabilidad de fracaso:
+
+$$
+\text{logit}(p) = \ln\left(\frac{p}{1 - p}\right)
+$$
+
+El modelo logístico general se expresa como:
+
+$$
+\text{logit}(p) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k
+$$
+
+donde:
+
+-   $p$ es la probabilidad de que ocurra el evento de interés (por ejemplo, que ( Y = 1 ));
+-   $\beta_0$ es el intercepto;
+-   $\beta_1$, $\beta_2$, ... son los coeficientes asociados a las variables independientes $X_1$, $X_2$, $\dots$, $X_k$.
+
+A partir de esta relación, la probabilidad puede obtenerse despejando $p$:
+
+$$
+p = \frac{e^{\beta_0 + \beta_1 X_1 + \dots + \beta_k X_k}}{1 + e^{\beta_0 + \beta_1 X_1 + \dots + \beta_k X_k}}
+$$
+
+Esta **función logística** garantiza que los valores estimados de $p$ estén siempre entre 0 y 1, lo cual la hace apropiada para modelar probabilidades.
+
+::: callout-note
+Recuerda que cada coeficiente $\beta_i$ representa el cambio en el logaritmo de las *odds* (razón de probabilidades) asociado a un incremento de una unidad en la variable $X_i$, manteniendo las demás constantes.
+:::
+
+## Proceso
+
+En este caso vamos a utilizar la data "Predict Students' Dropout and Academic Success", la cual pueden encontrar en [esta página web](https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success) de UCI Machine Learning Datasets.
+
+Para fines de esta clase, he preparado un subset de esta data original, haciendo algunas ediciones.
+
+| Variable | Nombre | Detalle |
+|------------------|------------------|-------------------------------------|
+| Estado civil | `marital_status` | 1 – single · 2 – married · 3 – widower · 4 – divorced · 5 – facto union · 6 – legally separated |
+| Turno | `day_or_night` | Factor (Sí – No) |
+| Calificación previa a ingresar | `previous_qualification` | Continua (entre 0 a 200) |
+| Nota de admisión | `admission_grade` | Continua (entre 0 a 200) |
+| Desplazado | `displaced` | Factor (Sí – No) |
+| Género | `gender` | Factor (Hombre – Mujer) |
+| Edad | `age` | Edad del estudiante al matricularse |
+| Internacional | `international` | Factor (Sí – No) |
+| Estado (variable objetivo) | `target` | Factor (`Dropout` – `Graduate`) |
+
+La data la pueden encontrar en el PAIDEIA.
+
+### Paso 1: Apertura de dataset {.unnumbered}
+
+Abrimos nuestra base de datos:
+
+```{r}
+#| message: false
+#| warning: false
+library(rio)
+library(tidyverse)
+data<-import("data/dropout2.csv")
+```
+
+A continuación, convertimos las variables categóricas a factores para que R las reconozca correctamente. Esto es esencial para el análisis y modelado posterior.
+
+```{r}
+data$marital_status <- as.factor(data$marital_status)
+data$day_or_night <- as.factor(data$day_or_night)
+data$displaced <- as.factor(data$displaced)
+data$gender <- as.factor(data$gender)
+data$international <- as.factor(data$international)
+```
+
+### Paso 2: EDA {.unnumbered}
+
+Siempre realiza tu análisis exploratorio de datos antes de iniciar el flujo de machine learning. Realizamos una exploración visual de los datos para identificar patrones y diferencias entre grupos según la variable objetivo (target).
+
+Primero, comparamos la distribución de edad según el estado del estudiante:
+
+```{r}
+data |> 
+  ggplot()+
+  aes(y= age, color=target) + 
+  geom_boxplot() +
+  facet_wrap(~target)
+```
+
+Ahora, hacemos lo mismo para la variable admission_grade:
+
+```{r}
+data |> 
+  ggplot()+
+  aes(y= admission_grade, color=target) + 
+  geom_boxplot() +
+  facet_wrap(~target)
+```
+
+::: callout-note
+¿Qué buscamos? Separabilidad entre clases:
+
+Buscamos que las distribuciones de las variables numéricas sean diferentes entre las categorías de la variable objetivo (target). Si los boxplots se superponen completamente (son muy parecidos), esa variable probablemente no será útil para discriminar entre clases. Si están bien separados, es una señal de que la variable tiene poder predictivo.
+:::
+
+También podemos realizar una tabla resumen usando el paquete `gtsummary`. Mientras que los boxplots solo muestran variables numéricas de forma individual, tbl_summary() genera una tabla que incluye todas las variables del dataset (numéricas y categóricas) en un solo lugar, estratificadas por la variable objetivo.
+
+```{r}
+library(gtsummary)
+```
+
+```{r}
+#| message: false
+#| warning: false
+theme_gtsummary_language(
+  language = "es",
+  decimal.mark = "."
+)
+```
+
+```{r}
+data |>
+  tbl_summary(by = target,  # Va a utilizar mi target como columnas
+              include = everything(),# Incluye todas las variables
+              statistic = list(all_continuous() ~ "{mean} ({sd})")) 
+```
+
+### Paso 3: Split de la data {.unnumbered}
+
+Al igual que en las clases pasadas, dividimos los datos en conjuntos de entrenamiento y prueba (75%-25% por defecto). Esto nos permite evaluar el modelo en datos que no ha visto durante el entrenamiento, lo cual es fundamental para medir su capacidad de generalización.
+
+```{r}
+#| message: false
+#| warning: false
+library(tidymodels)
+set.seed(2025)
+split <- initial_split(data)
+training_data <- training(split)
+testing_data <- testing(split)
+```
+
+Creamos 5 folds para validación cruzada en los datos de entrenamiento. La validación cruzada nos ayuda a obtener una estimación más robusta del rendimiento del modelo.
+
+```{r}
+folds <- vfold_cv(training_data, v= 5)
+folds
+```
+
+::: callout-note
+Recuerda que la validación cruzada es un paso intermedio crucial antes del entrenamiento final.
+
+Si entrenamos directamente con todos los datos de entrenamiento y evaluamos solo en el conjunto de prueba, obtenemos una única estimación del rendimiento. Con CV obtenemos múltiples estimaciones (5 en tu caso), lo que nos da:
+
+-   Un promedio más confiable del rendimiento real del modelo: Ese promedio va a ser un indicador más robusto que te puede guiar antes de dar el paso final de evaluar en el testing data.
+
+-   Una medida de la variabilidad: ¿el modelo es consistente o su rendimiento fluctúa mucho?
+
+-   Preservar la integridad del conjunto de prueba: El conjunto de prueba debe permanecer completamente intocado hasta el final. Es tu "juez final" que simula datos nuevos que el modelo nunca ha visto. Si lo usas durante el desarrollo, pierdes esta garantía.
+:::
+
+### Paso 4: Construcción de WF: Receta + Modelo + WF {.unnumbered}
+
+Definimos los tres componentes principales para nuestro proceso de machine learning: la receta, el modelo a utilizar y en el ensamble en un workflow()
+
+```{r}
+lr_receta <- recipe(target~age, data=training_data)
+
+lr_modelo <- logistic_reg() |> 
+              set_engine("glm") |> 
+              set_mode("classification")
+
+lr_wf <- workflow() |> 
+          add_model(lr_modelo) |> 
+          add_recipe(lr_receta)
+```
+
+### Paso 5: Entrenamos el modelo con CV y analizamos rendimiento {.unnumbered}
+
+Entrenamos el modelo utilizando validación cruzada con los 5 folds definidos anteriormente. Evaluamos múltiples métricas (accuracy, specificity, sensitivity y roc_auc) para tener una visión completa del rendimiento.
+
+```{r}
+# Creamos un listado de métricas que solicitaremos
+mis_metricas <- metric_set(accuracy, specificity, sensitivity, roc_auc)
+
+# Realizamos un entrenamiento con remuestreo utilizando los folds creados
+
+lr_fit_cv<-lr_wf |> 
+          fit_resamples(resamples = folds, #Nuestros folds!
+                        metrics = mis_metricas,  # Nuestras métricas!
+                        control = control_resamples(save_pred = TRUE, 
+                                                    verbose = TRUE))
+```
+
+Primero revisamos las métricas para cada fold individualmente, lo que nos permite identificar la variabilidad en el rendimiento:
+
+```{r}
+collect_metrics(lr_fit_cv,
+                summarize = FALSE)
+```
+
+Luego obtenemos el promedio de las métricas a través de todos los folds:
+
+```{r}
+collect_metrics(lr_fit_cv)
+```
+
+::: callout-note
+En la evaluación de modelos de clasificación, especialmente en regresión logística, se utilizan diversas métricas derivadas de la matriz de confusión para medir su desempeño.
+
+Accuracy (Exactitud): Mide la proporción total de predicciones correctas sobre el total de observaciones. Es útil cuando las clases están balanceadas.
+
+Sensitivity (Sensibilidad o Recall): Indica la capacidad del modelo para detectar correctamente los casos positivos reales. Es prioritaria cuando es más costoso no detectar un positivo (por ejemplo, en detección de fraude o enfermedad).
+
+Specificity (Especificidad) Mide la capacidad del modelo para identificar correctamente los negativos reales. Es especialmente importante cuando un falso positivo genera consecuencias indeseadas o costosas. Por ejemplo, en un sistema de detección de lavado de activos, una baja especificidad haría que muchas operaciones legítimas sean marcadas como sospechosas, generando sobrecarga en los analistas y pérdida de confianza en el sistema.
+:::
+
+### Paso 6: Fiteamos y evaluamos con todo el entrenamiento con last_fit() {.unnumbered}
+
+Entrenamos el modelo final usando todos los datos de entrenamiento y lo evaluamos en el conjunto de prueba.
+
+```{r}
+modelo_logistico_final <- lr_wf |> last_fit(split, metrics = mis_metricas)
+```
+
+Una vez entrenado el modelo final podemos recolectar las predicciones que ha realizado (sobre nuestra data de test, es decir, la data nueva):
+
+```{r}
+collect_predictions(modelo_logistico_final)
+```
+
+Mira que para cada uno de los casos u observaciones de nuestra data de testo nos brinda:
+
+-   La clase predicha.
+
+-   La probabilidad que sea la clase/evento analizado (Dropout)
+
+-   La probabilidad que no sea la clase/evento analizado (Graduate).
+
+Asimismo, podemos recolectar las métricas:
+
+```{r}
+collect_metrics(modelo_logistico_final)
+```
+
+La matriz de confusión nos muestra el desempeño detallado del modelo en términos de clasificaciones correctas e incorrectas.
+
+```{r}
+collect_predictions(modelo_logistico_final) %>%
+  conf_mat(truth=target, 
+           estimate=.pred_class) |> 
+  autoplot(type = "heatmap")
+```
+
+
+EJERCICIO: Prueba calculando las métricas (accuracy, specificity, sensitivity) manualmente usando la matriz de confusión!
+
+
+## Extra: Interpretabilidad de la regresión logística
+
+La regresión logística destaca por su alta interpretabilidad comparada con otros algoritmos de machine learning. A diferencia de modelos de "caja negra" como redes neuronales, random forests u otros como los gradient boosting, la regresión logística nos permite entender exactamente cómo y cuánto cada variable influye en la predicción a través de sus coeficientes. Los odds ratios (coeficientes exponenciados) tienen una interpretación directa y significativa: nos dicen cuántas veces aumentan o disminuyen las probabilidades del evento cuando cambia una variable predictora.
+
+Por ejemplo, podemos decir con precisión: "este estudiante tiene 3.5 veces más probabilidad de desertar debido a X característica".
+
+Para nuestro ejercicio, podemos extraer los coeficientes del modelo para interpretar la relación entre las variables predictoras y la variable objetivo.
+
+Primero, vemos los coeficientes en escala logarítmica:
+
+```{r}
+modelo_logistico_final$.workflow[[1]] |> 
+  tidy()
+```
+
+Luego, calculamos los coeficientes exponenciados (odds ratios), que son más fáciles de interpretar.
+
+```{r}
+modelo_logistico_final$.workflow[[1]] |> 
+  tidy(exponentiate =TRUE)
+```
+
+::: callout-note
+Intercepto ((Intercept) = 7.72)
+
+Esto representa el odds (razón de probabilidades) de que el evento ocurra (Dropout) cuando todas las variables predictoras valen 0. En este caso, el modelo predice que las probabilidades de graduarse son 7.72 veces mayores que las de no graduarse cuando la edad es 0 (lo cual, claro, no es interpretable literalmente, pero sirve como punto de referencia matemático).
+
+Edad (`age` = 0.933)
+
+Es el cambio en las *odds* del evento por **cada año adicional**.
+
+-   OR = 0.933 ⇒ por cada +1 año, las *odds* \*disminuyen 6.7%\*\*: (1 - 0.933 = 0.067).\
+
+-   Ahora bien, podría ser más intuitivo expresar el efecto en la dirección opuesta.
+
+La inversa de 0.933 es 1 / 0.933 = 1.07.\
+Esto significa que **una disminución de un año en la edad** aumenta las *odds* del evento en **7%,** o, equivalentemente, que las *odds* se **multiplican por 1.07**..
+:::
+
+## Comparación entre RL Y RF
+
+Compara el rendimiento entre la regresión logística con el Random Forest. ¿Con qué algoritmo lograrías una mejor performance predictiva?
